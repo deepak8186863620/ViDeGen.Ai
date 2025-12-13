@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViDeGen.AI - Immersive AI Architect</title>
+    
+    <!-- Core Assets -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #09090b; 
+            color: #a1a1aa; 
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        
+        /* REFINED GLASS PANEL for Auth Screen */
+        .glass-panel { 
+            background: rgba(10, 10, 10, 0.85); /* Slightly darker background */
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); /* Sharper, cleaner border */
+        }
+
+        .device-mobile { width: 375px; margin: 0 auto; border-radius: 20px; border: 8px solid #27272a; }
+        .device-desktop { width: 100%; height: 100%; }
+        .hidden { display: none !important; }
+        
+        /* === CUSTOM PLATINUM/SILVER TEXT EFFECT === */
+        .platinum-text { 
+            color: #e3ebb2;
+            background: linear-gradient(145deg, #e3ebb2 10%, #e3ebb2 40%, #e3ebb2 60%, #a1a1a1 90%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.15); /* Subtle glow for prominence */
+        }
+        /* ======================================= */
+
+        /* Custom Scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0c0c0e; }
+        ::-webkit-scrollbar-thumb { background: #e3ebb2; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #374151; }
+
+        #notification-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            transition: opacity 0.3s, transform 0.3s;
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        #notification-box.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        /* Chatbot Container Styles */
+        #chat-widget-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 900;
+        }
+
+        #chat-window {
+            width: 340px;
+            height: 450px;
+            background: #020209;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(220, 220, 111, 0.5), 0 0 0 1px rgba(205, 209, 182, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateY(100%);
+            opacity: 0;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            margin-bottom: 10px; /* Space above button */
+        }
+
+        #chat-window.open {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chat-message {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .chat-user {
+            background-color: #b6bdce; /* Blue-600 */
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bot {
+            background-color: #1f2937; /* Gray-800 */
+            color: #e4e4e7;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-weight: 500;
+            color: #f7fafa;
+        }
+        .nav-item:hover {
+            background-color: #1f2937;
+            color: white;
+        }
+        .nav-item.active-tab {
+            background-color: #440bf0; /* Blue-600 */
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(64, 100, 197, 0.1), 0 2px 4px -2px rgba(29, 78, 216, 0.1);
+        }
+        /* METALLIC TEXT EFFECT */
+.metallic-text {
+    /* 1. Define the gradient for the metallic look (Silver/Chrome) */
+    background: linear-gradient(
+        180deg, 
+        #f0f0f0 0%,     /* Light reflection */
+        #c0c0c0 30%,    /* Mid-tone */
+        #808080 60%,    /* Dark shadow (creates depth) */
+        #f0f0f0 100%    /* Final bright reflection */
+    );
+    
+    /* 2. Crucial: Clip the gradient to the text shape */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* 3. Crucial: Make the text color transparent so the background shows through */
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+
+    /* Optional: Add a subtle text shadow for extra depth and glow */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+        /* GOLD BRAND COLOR */
+        .text-gold-400 { color: #e3ebb2; }
+            .bg-gold-400 { background: linear-gradient(90deg, #e3ebb2, #e3ebb2); color: #111827; }
+            .btn-gold { background: linear-gradient(90deg, #f0f3df, #eab308); color: #111827; border-radius: 9999px; padding: 0.75rem 1.5rem; font-weight: 600; }
+            .btn-gold:hover { filter: brightness(0.95); transform: translateY(-1px); }
+ 
+    </style>
+
+    <!-- SECURITY PROTOCOLS (Preserved) -->
+    <script>
+        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.onkeydown = function(e) {
+            if(e.keyCode == 123) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+            if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+        }
+        console.log("%cSTOP!", "color: red; font-size: 50px; font-weight: bold;");
+        console.log("%cThis is a browser feature intended for developers. Access is restricted.", "font-size: 16px;");
+    </script>
+</head>
+
+<nav id="future-interns-navbar" class="w-full py-4 px-8 flex justify-center sticky top-0 z-50 transition-colors"
+    style="background-color: var(--panel-bg); 
+           border-bottom: 1px solid var(--border-color); 
+           /* Subtle light shadow is suitable for both dark and light themes */
+           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);"> 
+    
+    <div class="flex items-center justify-between w-full max-w-7xl">
+        
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zM12 18.5a6.5 6.5 0 1 1 0-13 6.5 6.5 0 0 1 0 13zM12 7v8M9.5 9.5l4 4M14.5 9.5l-4 4" stroke="#4CD964" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="text-2xl font-bold">
+                <span style="color: #e3ebb2;">ViDe</span>
+                <span style="color: #e3ebb2;">Gen.Ai</span>
+            </span>
+        </div>
+
+        <div class="flex items-center space-x-6 text-sm font-medium" style="color: var(--text-color);">
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Home</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">About Us</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Internships</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Services</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Verify</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Invite & Earn</a>
+            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Contact Us</a>
+        </div>
+
+        <a href="#" class="py-3 px-6 rounded-full text-white font-semibold shadow-md transition-all duration-300"
+           style="background: linear-gradient(to right, #4CD964, #3CB371); 
+                  box-shadow: 0 4px 10px rgba(76, 217, 100, 0.4);">
+            Apply For Internship
+        </a>
+    </div>
+</nav>
+
+
+<body class="selection:bg-blue-500/30 selection:text-blue-200 min-h-screen">
+    <section class="p-16 text-center bg-black">
+    <h1 class="metallic-text text-6xl md:text-8xl font-extrabold tracking-tight drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]">
+        ViDeGen.Ai
+    </h1>
+    <p class="text-xl text-zinc-500 mt-4 font-medium tracking-wider">
+        Architecture powered by ViDeGen.AI Built By Deepak Prajapati
+    </p>
+</section>
+    
+    <!-- Custom Notification Box -->
+    <div id="notification-box" class="p-3 rounded-lg shadow-xl text-sm border"></div>
+
+    <!-- FILE PROTOCOL WARNING OVERLAY (Hidden by default) -->
+    <div id="server-warning" class="hidden fixed inset-0 z-[9999] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+        <div class="w-full max-w-2xl bg-[#0b0b0d] border border-zinc-800 rounded-xl p-6 text-center">
+            <h2 class="text-2xl font-bold text-white mb-2">Local server required</h2>
+            <p class="text-zinc-400 mb-4">It looks like you're opening this page from the file system (file://). Some browser features (ES modules, CORS for modules) require a local server to run properly.</p>
+            <div class="text-left bg-zinc-900/60 rounded-lg p-3 mb-4">
+                <div class="text-xs text-zinc-300 font-mono">Recommended commands to run a local server:</div>
+                <div class="mt-2 grid gap-2">
+                    <div class="flex items-center gap-2"><button class="copy-server-cmd p-2 bg-zinc-800 text-zinc-200 rounded-md" data-cmd="python -m http.server 3000">Python (HTTP server)</button><span class="text-xs text-zinc-400">— Opens at <code>http://localhost:3000</code></span></div>
+                    <div class="flex items-center gap-2"><button class="copy-server-cmd p-2 bg-zinc-800 text-zinc-200 rounded-md" data-cmd="npx http-server -p 3000">Node (http-server)</button><span class="text-xs text-zinc-400">— Opens at <code>http://localhost:3000</code></span></div>
+                    <div class="flex items-center gap-2"><button class="copy-server-cmd p-2 bg-zinc-800 text-zinc-200 rounded-md" data-cmd="Live Server (VS Code)">VS Code Live Server</button><span class="text-xs text-zinc-400">— Use the VS Code extension 'Live Server'</span></div>
+                </div>
+            </div>
+            <div class="flex items-center justify-center gap-4">
+                <button id="server-warning-close" class="px-4 py-2 bg-blue-600 text-white rounded-md">Continue in this page</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm Action Modal -->
+    <div id="confirm-modal" class="hidden fixed inset-0 z-[9998] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+        <div class="w-full max-w-md bg-[#0b0b0d] border border-zinc-800 rounded-xl p-6 text-center">
+            <h3 id="confirm-modal-title" class="text-lg font-semibold text-white mb-2">Confirm Action</h3>
+            <p id="confirm-modal-message" class="text-sm text-zinc-400 mb-4">Are you sure?</p>
+            <div class="flex items-center justify-center gap-4">
+                <button id="confirm-modal-yes" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-md">Yes</button>
+                <button id="confirm-modal-no" class="px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded-md">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Voice Command Help Modal -->
+    <div id="voice-help-modal" class="hidden fixed inset-0 z-[9997] flex items-center justify-center bg-black/80 backdrop-blur-sm p-6">
+        <div class="w-full max-w-lg bg-[#0b0b0d] border border-zinc-800 rounded-xl p-6 text-center">
+            <h3 class="text-lg font-semibold text-white mb-2">Voice Commands: Quick Reference</h3>
+            <ul class="text-left text-sm text-zinc-300 list-disc pl-5 space-y-2 mb-4">
+                <li>Open settings / Show settings</li>
+                <li>Close settings / Hide settings</li>
+                <li>Set prompt to &lt;your prompt&gt;</li>
+                <li>Generate / Start build</li>
+                <li>Copy code / Copy the code</li>
+                <li>Open dashboard / Go to dashboard</li>
+                <li>Open history / Show history</li>
+                <li>Sign in with Google</li>
+                <li>Toggle theme / Switch theme</li>
+                <li>Set API key to &lt;key&gt;</li>
+            </ul>
+            <div class="flex items-center justify-center gap-4">
+                <button id="voice-help-close" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH GATEWAY (Emergent-Style Login Modal) -->
+    <div id="auth-screen" class="fixed inset-0 z-50 flex items-center justify-center px-4 bg-black/80 backdrop-blur-sm">
+        <div class="w-full max-w-3xl bg-black/95 rounded-3xl border border-zinc-800 shadow-2xl overflow-hidden">
+            <div class="grid grid-cols-1 md:grid-cols-2">
+                <!-- Left: Headline and actions -->
+                <div class="p-10 text-center bg-gradient-to-b from-black/90 to-transparent">
+                    <div class="mb-6">
+                        <h1 class="text-4xl font-extrabold tracking-tight text-gold-400">ViDeGen.AI</h1>
+                        <p class="mt-3 text-lg text-zinc-400">Build Full-Stack Web & Mobile Apps in minutes</p>
+                    </div>
+                    <div class="mt-12 space-y-4">
+                        <button id="google-signin-btn" aria-label="Continue with Google" class="w-full text-left px-6 py-4 btn-gold shadow-lg flex items-center gap-4 hover:shadow-xl transition-shadow">
+                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-white text-black font-bold shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="w-5 h-5">
+                                    <path fill="#EA4335" d="M24 9.5c3.9 0 7.1 1.3 9.5 3.8l7-7C36.5 2.2 30.7 0 24 0 14.9 0 6.8 5 2.8 12.4l8.4 6.5C13.8 14.1 18.5 9.5 24 9.5z"/>
+                                    <path fill="#34A853" d="M46.6 24.4c0-1.5-.1-2.6-.4-3.9H24v7.4h12.7c-.5 2.7-2.1 5-4.6 6.6l7.1 5.5C44.9 36.8 46.6 30.9 46.6 24.4z"/>
+                                    <path fill="#4A90E2" d="M10.9 29c-.6-1.6-.9-3.2-.9-4.9 0-1.7.3-3.3.9-4.9L2.8 12.4C1 15.7 0 19.6 0 24s1 8.3 2.8 11.6l8.1-6.6z"/>
+                                    <path fill="#FBBC05" d="M24 48c6.7 0 12.5-2.2 16.7-5.9l-7.1-5.5c-2 1.4-4.6 2.4-9.6 2.4-5.5 0-10.2-4.6-11.9-10.8L2.8 35.6C6.8 42.9 14.9 48 24 48z"/>
+                                </svg>
+                            </span>
+                            <span class="font-medium">Continue with Google</span>
+                        </button>
+
+                        <div class="flex items-center gap-4 justify-center">
+                            <button id="github-signin-btn" aria-label="Sign in with GitHub" class="p-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white w-14 h-14 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="currentColor" d="M12 .5C5.6.5.5 5.6.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2.3c-3.2.7-3.8-1.4-3.8-1.4-.5-1.2-1.2-1.6-1.2-1.6-1-.6.1-.6.1-.6 1.1.1 1.6 1.1 1.6 1.1 1 .1 1.6.8 2 .5.1-.6.4-1 .7-1.2-2.6-.3-5.3-1.3-5.3-6 0-1.3.5-2.4 1.2-3.2-.2-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2.9-.3 1.9-.5 2.9-.5s2 .2 2.9.5c2.3-1.6 3.3-1.2 3.3-1.2.6 1.7.3 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.7-2.7 5.7-5.3 6 .4.4.8 1.1.8 2.2v3.2c0 .3.2.7.8.6C20.7 21.4 24 17.1 24 12c0-6.4-5.1-11.5-12-11.5z"/></svg></button>
+                            <button id="apple-signin-btn" aria-label="Sign in with Apple" class="p-3 rounded-full bg-zinc-800 hover:bg-zinc-700 text-white w-14 h-14 flex items-center justify-center"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="w-5 h-5"><path fill="currentColor" d="M16.6 1.5c-.9.1-2 .6-2.9 1.5-.8.8-1.5 1.8-1.3 3 .2 1.3 1 2.1 1.8 2.4.1 0 .3.1.5.1.2 0 .5-.1.7-.1.4-.1 1-.3 1.5-.4.4-.1.8-.1 1.2-.1.6 0 1.3.2 2 .7-.5 1.1-1.3 2.3-2.4 3.5-.9.9-1.7 1.5-2.6 1.9-.9.4-1.8.6-2.6.6-1.7 0-3.2-.7-4.5-2.2-2-2.3-2-5.5-1.9-6 .2-.8.7-1.6 1.4-2.2.7-.6 1.5-1 2.2-1.1.5-.1 1-.1 1.6.1 0 0 .2.1.4.1.2.1.4.1.7.2.2.1.4.1.6.1.2 0 .6 0 1.1-.1.5-.1 1-.2 1.5-.3.5-.1.9-.1 1.3-.1.5 0 1.1.1 1.6.3z"/></svg></button>
+                        </div>
+
+                        <div class="flex items-center gap-3 my-4">
+                            <div class="flex-1 h-px bg-zinc-800"></div>
+                            <div class="text-xs text-zinc-500">OR</div>
+                            <div class="flex-1 h-px bg-zinc-800"></div>
+                        </div>
+
+                        <div class="space-y-2">
+                            <button id="email-cta-btn" class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-green-600 hover:bg-green-500 rounded-full font-semibold text-white">Continue with Email</button>
+                            <button id="email-create-btn" class="w-full inline-flex items-center justify-center gap-3 px-6 py-3 bg-transparent hover:bg-zinc-900 border border-zinc-800 rounded-full text-xs text-zinc-300">Create Account with Email</button>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-xs text-zinc-600">
+                        By continuing, you agree to our <a class="underline text-zinc-400" href="#">Terms of Service</a> and <a class="underline text-zinc-400" href="#">Privacy Policy</a>.
+                    </div>
+
+                    <!-- Global small auth error container -->
+                    <div id="auth-error" class="hidden mt-4 p-3 bg-red-500/10 border border-red-500/20 rounded text-red-400 text-xs text-center"></div>
+
+                    <div class="mt-4 text-xs text-zinc-500">
+                        <span>New to ViDeGen?</span>
+                        <button id="auth-toggle-text" onclick="toggleAuthMode()" class="text-blue-400 hover:underline ml-2">Create Account</button>
+                    </div>
+                </div>
+
+                <!-- Right: Email login panel (hidden by default) -->
+                <div id="email-login-panel" class="hidden p-8 bg-[#0b0b0d]">
+                    <div class="mb-4 text-right">
+                        <button id="close-email-login" class="text-zinc-400 hover:text-white"><i class="ph-bold ph-x"></i></button>
+                    </div>
+                    <h2 class="text-2xl text-white font-bold mb-4">Sign in with Email</h2>
+                    <form id="modal-login-form" class="space-y-4">
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Email</label>
+                            <input type="email" id="modal-auth-email" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-zinc-400 mb-1">Password</label>
+                            <input type="password" id="modal-auth-password" required class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-zinc-400">Forgot Password?</div>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-md font-medium">Sign In</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- DEMO MODE BANNER (Hidden by default) -->
+    <div id="demo-banner" class="hidden fixed top-4 left-1/2 -translate-x-1/2 z-[9999] bg-yellow-200 border border-yellow-400 text-yellow-900 px-4 py-2 rounded-lg shadow-md text-sm">
+        Demo Mode: Authentication bypass enabled — Signing-in will open the app without real authentication.
+    </div>
+
+    <!-- APPLICATION CORE - IMMERSIVE FULL-SCREEN LAYOUT -->
+    <div id="app-screen" class="hidden flex min-h-screen">
+
+        <!-- SIDEBAR NAVIGATION (Full Height) -->
+        <nav id="sidebar" class="w-64 flex-shrink-0 bg-[#0c0c0e] border-r border-zinc-800 p-4 flex flex-col justify-between sticky top-0 h-screen transition-all duration-300">
+            
+            <div>
+                <!-- Logo/Title: Updated with platinum style -->
+                <div class="h-16 flex items-center mb-6 px-2">
+                    <span class="font-bold text-2xl platinum-text tracking-tight">ViDeGen<span class="text-blue-500 text-xl">.AI</span></span>
+                            <div id="auth-status-indicator" class="ml-3 text-xs text-green-400 hidden"></div>
+                </div>
+
+                <!-- Nav Links -->
+                <div class="space-y-1">
+                    <button id="tab-generator" onclick="window.appSetView('generator')" class="nav-item w-full active-tab">
+                        <i class="ph-fill ph-lightning text-lg"></i> 
+                        <span>AI Architect</span>
+                    </button>
+                    <button id="tab-dashboard" onclick="window.appSetView('dashboard')" class="nav-item w-full">
+                        <i class="ph-fill ph-gauge text-lg"></i> 
+                        <span>Dashboard</span>
+                    </button>
+                    <button id="tab-history" onclick="window.appSetView('history')" class="nav-item w-full">
+                        <i class="ph-fill ph-clock-counter-clockwise text-lg"></i> 
+                        <span>Build History</span>
+                    </button>
+                    <button id="tab-support" onclick="window.appToggleChat()" class="nav-item w-full">
+                        <i class="ph-fill ph-headset text-lg"></i> 
+                        <span>Support (Chat)</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Profile & Settings Block -->
+            <div class="p-2 border-t border-zinc-800 pt-4">
+                <div class="flex items-center justify-end text-sm mb-3">
+                    <button onclick="window.appToggleSettings()" class="text-zinc-500 hover:text-white transition-colors" title="Settings">
+                        <i class="ph-fill ph-gear text-lg"></i>
+                    </button>
+                </div>
+                
+                <div class="flex items-center justify-between p-3 bg-zinc-900 rounded-lg">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center text-xs text-white font-bold shadow-lg shadow-blue-900/20" id="user-avatar">D</div>
+                        <span id="user-email-header" class="text-sm font-medium text-white truncate max-w-[100px]">Loading...</span>
+                    </div>
+                    <button onclick="window.appLogout()" class="text-zinc-500 hover:text-red-400 transition-colors" title="Logout"><i class="ph-bold ph-sign-out text-lg"></i></button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT AREA (Fills Remaining Width) -->
+        <main class="flex-grow overflow-y-auto p-8 min-h-screen flex flex-col">
+            
+            <!-- VIEW: AI ARCHITECT (Generator) -->
+            <div id="view-generator" class="space-y-8">
+                <!-- Centered primary title -->
+                 
+                </div>
+                <!-- TWO-COLUMN GENERATION / PREVIEW AREA (fills screen) -->
+                <div class="flex flex-col lg:flex-row gap-6 min-h-[62vh]">
+                    <!-- LEFT: Generator controls and prompt -->
+                    <div class="flex-1 p-6 bg-zinc-950 rounded-8xl border border-blue-700/50 shadow-2xl flex flex-col gap-6">
+                    
+                        <!-- Text Area (Takes most space) -->
+                        <div class="flex-1">
+                        <h2 class="metallic-text text-6xl md:text-4xl font-extrabold tracking-tight drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]">INPUT PROMPT</h2>
+                        <textarea id="prompt-input" rows="4" class="w-full bg-zinc-900 border border-zinc-700 rounded-lg p-4 text-zinc-300 text-sm font-mono resize-none focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all" placeholder="// Command the AI to design your web page...&#10;// e.g. Create a sleek landing page for a decentralized finance platform, ensuring mobile responsiveness."></textarea>
+                    </div>
+
+                        <!-- Controls (Fixed width on desktop, stacked on mobile) -->
+                        <div class="flex flex-col justify-end gap-3 lg:w-100 w-100 flex-shrink-0">
+                        <!-- NEW COPY CODE BUTTON (Gold/Yellow) -->
+                        <button id="copy-code-btn" disabled class="w-full py-3 bg-yellow-600 hover:bg-yellow-500 text-zinc-900 text-sm font-bold rounded-lg transition-colors shadow-lg shadow-yellow-900/40 disabled:bg-zinc-700 disabled:text-zinc-400 disabled:shadow-none">
+                            <i class="ph-bold ph-copy simple-copy-icon mr-1"></i> Copy Code
+                        </button>
+
+                        <!-- GENERATE BUTTON (Blue) -->
+                        <button id="generate-btn" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold rounded-lg transition-colors shadow-lg shadow-blue-900/40">
+                            <i class="ph-bold ph-lightning mr-1"></i> Initialise Build
+                        </button>
+                        <!-- Voice Assistant Button -->
+                        <div class="relative mt-2">
+                            <button id="voice-btn" title="Voice Assistant" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-3">
+                                <span id="voice-icon" class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white font-bold">🎤</span>
+                                <span id="voice-label">Voice Assistant</span>
+                            </button>
+                            <div id="voice-status" class="absolute -bottom-10 left-2/4 -translate-x-2/4 hidden rounded-md bg-zinc-900 p-2 text-xs text-white/80 shadow-md z-50">Commands: "Open Settings", "Generate", "Copy Code", "Set prompt to ..."</div>
+                            <button id="voice-help-btn" title="Voice Help" class="absolute -top-10 right-1 p-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs">?</button>
+                        </div>
+                        
+                        <button onclick="window.appToggleSettings()" class="w-full text-xs text-zinc-400 hover:text-blue-400 flex items-center justify-center gap-2 transition-colors">
+                            <i class="ph-fill ph-gear"></i> Config
+                        </button>
+                    </div>
+                    </div>
+
+                    <!-- RIGHT: Preview (fills remaining height) -->
+                    <div class="flex-1 flex flex-col p-0">
+                        <div class="flex-1 p-0">
+                            <div id="browser-frame" class="w-full h-full bg-white shadow-2xl transition-all duration-500 flex flex-col overflow-hidden relative border border-zinc-800 rounded-xl device-desktop">
+                                <div class="h-8 bg-zinc-100 border-b border-zinc-200 flex items-center px-4 gap-2">
+                                    <div class="flex gap-1.5"><div class="w-3 h-3 rounded-full bg-red-400 border border-red-500/30"></div><div class="w-3 h-3 rounded-full bg-yellow-400 border border-yellow-500/30"></div><div class="w-3 h-3 rounded-full bg-green-400 border border-green-500/30"></div></div>
+                                    <div class="ml-4 flex-1 text-xs text-zinc-400 font-mono flex items-center gap-1 p-1 bg-zinc-200 rounded-full"><i class="ph-fill ph-lock-key"></i> secure://immersive-sandbox.videgen.ai</div>
+                                </div>
+                                <iframe id="preview-frame" class="flex-1 w-full h-full min-h-[80vh]" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+                                <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center bg-zinc-50 z-10">
+                                    <div class="w-20 h-20 bg-black rounded-3xl border border-zinc-200 shadow-lg flex items-center justify-center mb-4 animate-[bounce_3s_infinite]">
+                                        <i class="ph-duotone ph-layout text-4xl text-zinc-400"></i>
+                                    </div>
+                                    <h3 class="text-zinc-900 font-bold text-lg">Awaiting Architectural Instructions</h3>
+                                    <p class="text-zinc-500 text-sm mt-1">ViDeGen Engine v4.0 Ready to Build</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <!-- ADVANCED OPTIONS (full-width, below generator/preview) -->
+                
+<div class="flex justify-center mt-6 mb-4">
+    <button 
+        id="toggle-advanced-btn"
+        class="bg-zinc-800 text-sm text-zinc-300 font-medium py-2 px-6 rounded-full 
+               border border-zinc-700 shadow-md 
+               transition-colors duration-200 hover:bg-zinc-700 hover:text-white flex items-center gap-2">
+        <i class="bg-white text-black text-lg font-bold py-4 px-6 rounded-full 
+                                    border border-zinc-900 shadow-2xl shadow-zinc-900/50 "></i> 
+        Show Advanced Options
+    </button>
+</div>
+
+
+<div class="mt-8">
+    <div id="advanced-options-content" class="hidden p-6 glass-panel-app"> 
+        
+        <h3 class="text-4xl font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2;">
+            <i class="ph-fill ph-sliders text-2xl" style="color: #c0c0c0; text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);"></i> 
+            <span style="color: #f4f8df;">------>ADVANCED BUILD OPTIONS<-----</span>
+        </h3>
+        
+        <div class="space-y-5 text-base lg:max-w-3xl font-medium"> 
+            
+            <h3 class="metallic-text text-6xl md:text-4xl font-extrabold tracking-tight drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]" style="color: #a1a1aa;"> STYLING & STRUCTURE</h3>
+            
+            <label class="block">
+                <span class="metallic-text text-6xl md:text-2xl font-extrabold tracking-tight drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]">Target Framework</span>
+                <select id="opt-framework" class="w-full holographic-input rounded-lg p-3 text-sm transition-colors">
+                    <option value="HTML">HTML + Tailwind</option>
+                    <option value="React">React (Single File)</option>
+                    <option value="Angular">Angular (Single File)</option>
+                </select>
+            </label>
+
+            <div class="p-8 rounded-xl border border-[var(--border-color)] bg-[var(--panel-bg)] w-80 shadow-2xl">
+        <h2 class="text-xl font-bold mb-4 text-[var(--accent-color)]">Settings</h2>
+        
+        <label class="block">
+            <span class="text-sm font-bold block mb-1">Color Palette</span>
+            <select id="opt-color-palette" class="w-full holographic-input rounded-lg p-3 text-sm transition-colors outline-none focus:ring-2 focus:ring-[var(--accent-color)]">
+                <option value="dark">Dark Mode (Default)</option>
+                <option value="light">Light Mode</option>
+                <option value="vibrant">Vibrant Gradient</option>
+                <option value="mono">Monochromatic</option>
+            </select>
+        </label>
+    </div>
+
+            <h4 class="text-sm font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2;">// INTERACTIVITY & OPTIMIZATION</h4>
+
+            <label class="flex items-center justify-between text-zinc-300">
+                Include Micro-Animations (CSS/JS)
+                <input type="checkbox" id="opt-animations" class="form-checkbox text-cyan-600 bg-zinc-900 border-zinc-500 rounded transition-colors shadow-inner" checked>
+            </label>
+
+            <label class="text-lg font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2">
+                Optimize for SEO Headers (Meta/Title)
+                <input type="checkbox" id="opt-seo" class="text-sm font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2;" checked>
+            </label>
+
+            <label class="block">
+                <span class="text-sm font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2;">3D/Data JS Library</span>
+                <select id="opt-js-library" class="w-full rounded-lg p-3 text-sm bg-black">
+                    <option value="None">None</option>
+                    <option value="Three.js">Three.js (3D Graphics)</option>
+                    <option value="D3.js">D3.js (Data Visualization)</option>
+                </select>
+            </label>
+            
+            <label class="flex items-center justify-between text-zinc-300 mt-3">
+                Voice Assistant
+                <input id="opt-voice" type="checkbox" class="text-sm font-extrabold uppercase pt-2 tracking-widest" style="color: #e3ebb2;">
+            </label>
+        </div>
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="hidden space-y-10">
+                <h1 class="text-3xl font-bold text-white mb-6 border-b border-zinc-800 pb-4">User Account Dashboard</h1>
+
+                <div class="grid lg:grid-cols-3 gap-8">
+                    
+                    <!-- STATS / QUICK INFO -->
+                    <div class="lg:col-span-1 space-y-6">
+                        <div class="p-6 bg-[#0c0c0e] rounded-xl border border-blue-800/50 shadow-xl">
+                            <h3 class="text-xl font-bold text-blue-400 mb-4 flex items-center gap-2"><i class="ph-duotone ph-gauge"></i> Account Metrics</h3>
+                            <dl class="space-y-3 text-sm">
+                                <div class="flex justify-between border-b border-zinc-800 pb-2">
+                                    <dt class="text-zinc-400">Builds Completed</dt>
+                                    <dd id="dash-builds" class="font-bold text-white text-lg">N/A</dd>
+                                </div>
+                                <div class="flex justify-between border-b border-zinc-800 pb-2">
+                                    <dt class="text-zinc-400">Member Since</dt>
+                                    <dd id="dash-member-since" class="text-zinc-300">N/A</dd>
+                                </div>
+                                <div class="flex justify-between">
+                                    <dt class="text-zinc-400">Account Type</dt>
+                                    <dd class="text-green-400 font-medium">Architect (Free)</dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- User Identification Card -->
+                        <div class="p-6 bg-[#0c0c0e] rounded-xl border border-zinc-800 shadow-xl font-mono text-xs">
+                            <h3 class="text-sm font-semibold text-zinc-500 mb-2">IDENTIFICATION</h3>
+                            <p class="break-all text-zinc-300 leading-relaxed">
+                                <span class="text-blue-500 mr-2 font-bold">UID:</span> <span id="dash-user-id">Loading...</span>
+                            </p>
+                        </div>
+
+                        <div class="p-6 bg-[#0c0c0e] rounded-xl border border-zinc-800 shadow-xl">
+                            <h3 class="text-xl font-bold text-zinc-300 mb-4 flex items-center gap-2"><i class="ph-duotone ph-file-pdf"></i> Billing & Reports</h3>
+                            <button class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-sm font-medium text-zinc-300 rounded-lg transition-colors" onclick="showNotification('Feature under construction.', 'info')">
+                                Download Invoice (Coming Soon)
+                            </button>
+                        </div>
+
+                    </div>
+
+                    <!-- PROFILE MANAGEMENT -->
+                    <div class="lg:col-span-2">
+                        <div class="p-8 bg-[#0c0c0e] rounded-xl border border-zinc-800 shadow-2xl">
+                            <h3 class="text-xl font-bold text-white mb-6 flex items-center gap-2"><i class="ph-duotone ph-user-circle"></i> Profile & Contact Details</h3>
+                            
+                            <form id="profile-form" class="space-y-5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    
+                                    <!-- Email (Read-only) -->
+                                    <div>
+                                        <label for="profile-email" class="block text-xs font-medium text-zinc-400 mb-1">Email (Read-Only)</label>
+                                        <input type="email" id="profile-email" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-zinc-500 focus:outline-none" readonly>
+                                    </div>
+
+                                <!-- Profile Avatar URL -->
+                                <div>
+                                    <label for="profile-avatar-url" class="block text-xs font-medium text-zinc-400 mb-1">Profile Image URL</label>
+                                    <input type="url" id="profile-avatar-url" placeholder="https://.../avatar.jpg" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                                    <p class="text-[10px] text-zinc-500 mt-1">Paste a public image URL to use as your profile picture.</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div>
+                                        <label class="block text-xs font-medium text-zinc-400 mb-1">Preview</label>
+                                        <div id="profile-avatar-preview" class="w-14 h-14 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden border border-zinc-700">
+                                            <span class="text-zinc-400 text-sm">No img</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                    <!-- Phone Number -->
+                                    <div>
+                                        <label for="profile-phone" class="block text-xs font-medium text-zinc-400 mb-1">Phone Number</label>
+                                        <input type="text" id="profile-phone" placeholder="+91 12345 67890" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                                    </div>
+                                </div>
+                                
+                                <h4 class="text-md font-medium text-blue-300 pt-3 border-t border-zinc-800">Social & Professional Links</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                    
+                                    <!-- Instagram -->
+                                    <div>
+                                        <label for="profile-insta" class="block text-xs font-medium text-zinc-400 mb-1">Instagram Handle</label>
+                                        <div class="relative">
+                                            <span class="absolute left-3 top-3 text-zinc-500 text-sm">@</span>
+                                            <input type="text" id="profile-insta" placeholder="your_handle" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 pl-8 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- LinkedIn -->
+                                    <div>
+                                        <label for="profile-linkedin" class="block text-xs font-medium text-zinc-400 mb-1">LinkedIn Profile URL</label>
+                                        <input type="url" id="profile-linkedin" placeholder="https://www.linkedin.com/in/deepak-prajapati-819b81327/" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                                    </div>
+                                </div>
+                                
+                                <div class="pt-4 flex justify-end">
+                                    <button type="submit" id="save-profile-btn" class="px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white text-sm font-bold rounded-lg transition-colors shadow-lg shadow-green-900/40">
+                                        <i class="ph-bold ph-floppy-disk mr-1"></i> Save Profile
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: HISTORY (Moved from Generator to dedicated tab) -->
+            <div id="view-history" class="hidden space-y-8">
+                <h1 class="text-3xl font-bold text-white mb-6 border-b border-zinc-800 pb-4">Build History</h1>
+                <div class="p-6 bg-[#0c0c0e] rounded-xl border border-zinc-800 shadow-xl">
+                    <h3 class="text-xl font-bold text-zinc-300 mb-4 flex items-center gap-2"><i class="ph-duotone ph-clock-counter-clockwise text-blue-500"></i> Recent Blueprints</h3>
+                    <div id="history-list" class="space-y-2 max-h-[600px] overflow-y-auto">
+                        <div class="text-center py-4 text-sm text-zinc-600">Loading History...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FOOTER (Full Width) -->
+            
+    </div>
+
+    <!-- SETTINGS MODAL (Preserved) -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/70 backdrop-blur-sm transition-opacity">
+        <div class="w-[500px] bg-zinc-900 border border-zinc-700 rounded-xl shadow-2xl overflow-hidden">
+            <div class="h-12 bg-zinc-950 border-b border-zinc-800 flex items-center px-6 justify-between">
+                <span class="text-sm font-semibold text-white">System Configuration</span>
+                <button onclick="window.appToggleSettings()" class="text-zinc-500 hover:text-white"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="p-6">
+                <div class="mb-6">
+                    <label class="block text-xs text-blue-400 font-medium mb-2 uppercase tracking-wider">Gemini API Connection</label>
+                    <div class="relative">
+                        <input type="password" id="api-key-input" class="w-full bg-zinc-950 border border-zinc-700 rounded p-3 text-xs text-white focus:border-blue-500 focus:outline-none font-mono" placeholder="AIzaSy...">
+                        <i class="ph-fill ph-key absolute right-3 top-3 text-zinc-600"></i>
+                    </div>
+                    <p class="text-[10px] text-zinc-500 mt-2">Get your key from Google AI Studio. Stored locally.</p>
+                </div>
+
+                <div class="p-4 bg-zinc-950 border border-zinc-800 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs text-zinc-300">Platform Version</span>
+                        <span class="text-xs text-zinc-500 font-mono">v5.2.0-platinum-match</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-zinc-300">Lead Architect</span>
+                        <span class="text-xs text-blue-400 font-bold">Deepak Prajapati</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <label class="flex items-center gap-3">
+                        <input type="checkbox" id="demo-mode-toggle" class="form-checkbox text-blue-600 bg-zinc-900 border-zinc-700 rounded transition-colors">
+                        <span class="text-xs text-zinc-300">Enable Demo Mode (bypass authentication)</span>
+                    </label>
+                    <p class="text-[10px] text-zinc-500 mt-2">When enabled, clicking any Login or Sign-in button will open the main app without real Firebase authentication. For development only.</p>
+                </div>
+            </div>
+            <div class="p-4 bg-zinc-950 border-t border-zinc-800 flex justify-end gap-2">
+                <button onclick="window.appToggleSettings()" class="px-4 py-2 text-xs text-zinc-400 hover:text-white font-medium">Cancel</button>
+                <button onclick="window.appSaveSettings()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded transition-colors">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT WIDGET (New) -->
+    <div id="chat-widget-container">
+        <!-- Chat Window -->
+        <div id="chat-window" class="hidden">
+            <!-- Header -->
+            <div class="p-4 bg-blue-600 rounded-t-lg flex justify-between items-center flex-shrink-0">
+                <div class="flex items-center gap-2">
+                    <i class="ph-fill ph-robot text-white text-xl"></i>
+                    <span class="text-white font-bold text-md">Archie - AI Support</span>
+                </div>
+                <button onclick="window.appToggleChat()" class="text-white hover:text-blue-200 transition-colors"><i class="ph-bold ph-minus text-lg"></i></button>
+            </div>
+
+            <!-- Messages Area -->
+            <div id="chat-messages" class="flex-grow p-4 space-y-3 overflow-y-auto" style="min-height: 0;">
+                <div class="chat-message chat-bot">
+                    Hello! I'm Archie, the AI support for ViDeGen.AI, the platform created by Deepak Prajapati. I can help you with features, the architect, and general platform info. How can I assist you today?
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-3 border-t border-zinc-800 flex flex-shrink-0">
+                <input type="text" id="chat-input" placeholder="Ask a question..." class="flex-grow bg-zinc-950 border border-zinc-700 rounded-l-lg p-2 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                <button id="chat-send-btn" class="bg-blue-600 hover:bg-blue-500 text-white p-2 rounded-r-lg disabled:bg-zinc-700 transition-colors">
+                    <i class="ph-fill ph-paper-plane-tilt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Chat Button -->
+        <button id="chat-toggle-btn" onclick="window.appToggleChat()" class="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-500 text-white text-2xl shadow-xl shadow-blue-900/40 transition-transform transform hover:scale-105 active:scale-95">
+            <i class="ph-fill ph-chat-text"></i>
+        </button>
+    </div>
+
+    <!-- DEBUG PANEL (Hidden by default) -->
+    <div id="debug-toggle" title="Debug (toggle)" style="position:fixed;left:12px;bottom:12px;z-index:9999;">
+        <button class="w-10 h-10 rounded-full bg-zinc-900 text-white shadow-lg" onclick="document.getElementById('debug-panel').classList.toggle('hidden')">🐞</button>
+    </div>
+    <div id="debug-panel" class="hidden fixed left-12 bottom-24 z-[9999] w-[320px] bg-black/90 p-4 rounded-lg border border-zinc-800 text-xs text-zinc-200">
+        <div class="flex justify-between items-center mb-2"><strong>Local Debug</strong> <button onclick="document.getElementById('debug-panel').classList.add('hidden')" class="text-zinc-400">Close</button></div>
+        <div id="debug-content" class="space-y-2 text-[12px]"></div>
+    </div>
+
+    <!-- LOGIC ENCAPSULATION (Protected Scope) -->
+    <script type="module">
+        (function() {
+            try { if (typeof setLogLevel === 'function') setLogLevel('Debug'); } catch(e) { /* ignore if not available */ }
+            try {
+
+            // === CORE SYSTEM STATE ===
+            const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+            const firebaseConfig = (typeof __firebase_config !== 'undefined' ? (typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config) : {});
+            const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+            let currentUser = null, isSignUp = false;
+            // Helpful debug hint for local testing
+            try { if (Object.keys(firebaseConfig || {}).length) console.info('Firebase config loaded for project:', firebaseConfig.projectId || firebaseConfig.authDomain || '(unknown)'); } catch(e) {}
+            let lastGeneratedCode = ""; // Stores the last successful code output
+            
+            // Chat state
+            let chatHistory = [];
+            let isChatOpen = false;
+
+            // Chatbot System Prompt (Highly customized for rules)
+            const CHATBOT_SYSTEM_PROMPT = `
+                You are 'Archie,' the helpful, friendly support bot for ViDeGen.AI, a revolutionary web application architecture platform.
+
+                VIEDGEN.AI PLATFORM KNOWLEDGE:
+                - Purpose: ViDeGen.AI is an AI Architect tool for rapid prototyping and generating responsive, single-file web applications.
+                - Core Feature: 'AI Architect' uses user prompts and advanced options (Framework, Color Palette, Libraries) to generate code.
+                - Output: Always single-file code in HTML (with Tailwind), React (single JSX), or Angular (single TS/Component).
+                - Platform Focus: Generating code, not serving content.
+
+                ARCHITECT KNOWLEDGE:
+                - Name: Deepak Prajapati.
+                - Role: Lead Architect and creator of ViDeGen.AI.
+                - Contact/Social: Instagram: @deepakprajapati_, Phone: +919958763840, LinkedIn: https://linkedin.com/in/deepak-prajapati-a53b5113a.
+
+                MANDATORY RULE (SECURITY):
+                You **must not** disclose any information about the source code, architecture, Firebase setup, or internal implementation details of the ViDeGen.AI platform itself.
+                If the user asks questions like "How is the website built?", "Show me the source code," "What technologies run the backend?", or similar implementation queries, you **must** respond with the following refusal:
+                "I'm sorry, I cannot reveal ViDeGen.AI's internal architecture or source code, as that is proprietary information. However, I can certainly help you with how to *use* the AI Architect feature or tell you more about Deepak Prajapati's work!"
+            `;
+
+
+            // === DOM ELEMENTS ===
+            const notificationBox = document.getElementById('notification-box');
+            const copyCodeBtn = document.getElementById('copy-code-btn');
+            const generateBtn = document.getElementById('generate-btn');
+            const chatWindow = document.getElementById('chat-window');
+            const chatMessagesDiv = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const serverWarning = document.getElementById('server-warning');
+            const serverCmdButtons = document.querySelectorAll('.copy-server-cmd');
+            const serverWarningClose = document.getElementById('server-warning-close');
+
+            // --- Helper for Notifications ---
+            function showNotification(message, type = 'error') {
+                notificationBox.textContent = message;
+                let bgColor, borderColor, textColor;
+                if (type === 'error') {
+                    bgColor = 'bg-red-900/90';
+                    borderColor = 'border-red-600';
+                    textColor = 'text-red-200';
+                } else if (type === 'success') {
+                    bgColor = 'bg-green-900/90';
+                    borderColor = 'border-green-600';
+                    textColor = 'text-green-200';
+                } else {
+                    bgColor = 'bg-zinc-800/90';
+                    borderColor = 'border-blue-600';
+                    textColor = 'text-zinc-200';
+                }
+
+                notificationBox.className = `p-3 rounded-lg shadow-xl text-sm border show ${bgColor} ${borderColor} ${textColor}`;
+                setTimeout(() => {
+                    notificationBox.classList.remove('show');
+                }, 4000);
+            }
+
+            // Helper to set the profile avatar across UI: sidebar, footer and avatar preview.
+            function setProfileAvatar(url) {
+                const avatarEl = document.getElementById('user-avatar');
+                const footerAvatarEl = document.getElementById('footer-avatar-img');
+                const previewEl = document.getElementById('profile-avatar-preview');
+                // No URL -> show initial letter
+                if (!url) {
+                    const username = currentUser && currentUser.email ? currentUser.email.split('@')[0] : null;
+                    if (avatarEl) { avatarEl.innerHTML = ''; avatarEl.textContent = username ? username.charAt(0).toUpperCase() : 'U'; }
+                    if (footerAvatarEl) { footerAvatarEl.src = ''; footerAvatarEl.classList.add('hidden'); }
+                    if (previewEl) { previewEl.innerHTML = '<span class="text-zinc-400 text-sm">No img</span>'; }
+                    return;
+                }
+
+                // Preload image to verify valid source
+                const i = new Image();
+                i.onload = () => {
+                    if (avatarEl) { avatarEl.innerHTML = ''; i.className = 'w-8 h-8 rounded-full object-cover'; avatarEl.appendChild(i); }
+                    if (footerAvatarEl) { footerAvatarEl.src = url; footerAvatarEl.classList.remove('hidden'); }
+                    if (previewEl) { previewEl.innerHTML = ''; const pi = i.cloneNode(); pi.className = 'w-full h-full object-cover'; previewEl.appendChild(pi); }
+                };
+                i.onerror = () => {
+                    const username = currentUser && currentUser.email ? currentUser.email.split('@')[0] : null;
+                    if (avatarEl) { avatarEl.innerHTML = ''; avatarEl.textContent = username ? username.charAt(0).toUpperCase() : 'U'; }
+                    if (footerAvatarEl) { footerAvatarEl.src = ''; footerAvatarEl.classList.add('hidden'); }
+                    if (previewEl) { previewEl.innerHTML = '<span class="text-zinc-400 text-sm">Invalid image</span>'; }
+                };
+                i.src = url;
+            }
+
+            // --- Firestore helpers removed (migrated to app.js) ---
+
+
+            // Firebase initialization & auth handling moved to app.js
+
+            // If loaded via file://, show an overlay explaining a local server requirement
+            try {
+                if (location.protocol === 'file:' && serverWarning) {
+                    serverWarning.classList.remove('hidden');
+                }
+            } catch (e) { /* ignore */ }
+
+            // Copy server command helper
+            if (serverCmdButtons && serverCmdButtons.length) {
+                serverCmdButtons.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const cmd = btn.getAttribute('data-cmd');
+                        if (cmd && navigator.clipboard) {
+                            navigator.clipboard.writeText(cmd).then(() => {
+                                showNotification('Copied server command to clipboard. Run it in your terminal to start a local server.', 'success');
+                            });
+                        } else {
+                            showNotification('Copy not supported by the browser. Manually copy the command instead.', 'error');
+                        }
+                    });
+                });
+            }
+
+            if (serverWarningClose) serverWarningClose.addEventListener('click', () => serverWarning.classList.add('hidden'));
+
+
+            // --- Global Interface Exposure (Secure) ---
+            window.toggleAuthMode = (force) => {
+                // Accept an optional boolean to force switching mode:
+                // - true  => sign-up (create account)
+                // - false => sign-in
+                // - undefined => toggle current mode
+                if (typeof force === 'boolean') isSignUp = !!force;
+                else isSignUp = !isSignUp;
+                // Update email modal heading and submit button label
+                const modalH2 = document.querySelector('#email-login-panel h2');
+                if (modalH2) modalH2.textContent = isSignUp ? 'Create Account' : 'Sign in with Email';
+                const modalBtn = document.querySelector('#modal-login-form button[type="submit"]');
+                if (modalBtn) modalBtn.textContent = isSignUp ? 'Create Account' : 'Sign In';
+                const smallToggle = document.getElementById('auth-toggle-text');
+                if (smallToggle) smallToggle.textContent = isSignUp ? 'Have an account? Sign In' : 'Create Account';
+            };
+
+            // Explicit helper to show the email panel and force sign-up mode
+            window.openCreateAccount = () => {
+                if (window.toggleAuthMode) window.toggleAuthMode(true);
+                if (window.appShowEmailPanel) window.appShowEmailPanel();
+            };
+
+            window.appToggleSettings = () => document.getElementById('settings-modal').classList.toggle('hidden');
+            
+            window.appSaveSettings = () => {
+                const key = document.getElementById('api-key-input').value.trim();
+                if(key) {
+                    localStorage.setItem('gemini_key', key);
+                    window.appToggleSettings();
+                    showNotification("System: API Key configured.", 'success');
+                } else {
+                    showNotification("Warning: API Key is empty.", 'error');
+                }
+            };
+
+            window.appSetDevice = (view) => {
+                const frame = document.getElementById('browser-frame');
+                frame.className = `w-full h-[800px] bg-white shadow-2xl transition-all duration-500 flex flex-col overflow-hidden relative border border-zinc-800 rounded-xl ${view === 'mobile' ? 'device-mobile' : 'device-desktop'}`;
+                
+                document.getElementById('device-desktop').classList.toggle('bg-zinc-800', view === 'desktop');
+                document.getElementById('device-desktop').classList.toggle('text-white', view === 'desktop');
+                document.getElementById('device-desktop').classList.toggle('text-zinc-400', view !== 'desktop');
+                
+                document.getElementById('device-mobile').classList.toggle('bg-zinc-800', view === 'mobile');
+                document.getElementById('device-mobile').classList.toggle('text-white', view === 'mobile');
+                document.getElementById('device-mobile').classList.toggle('text-zinc-400', view !== 'mobile');
+            };
+
+            window.appSetView = (view) => {
+                document.getElementById('view-generator').classList.toggle('hidden', view !== 'generator');
+                document.getElementById('view-dashboard').classList.toggle('hidden', view !== 'dashboard');
+                document.getElementById('view-history').classList.toggle('hidden', view !== 'history');
+
+                document.getElementById('tab-generator').classList.remove('active-tab');
+                document.getElementById('tab-dashboard').classList.remove('active-tab');
+                document.getElementById('tab-history').classList.remove('active-tab');
+                
+                document.getElementById(`tab-${view}`).classList.add('active-tab');
+
+                if (view === 'dashboard') {
+                    if (window.appLoadProfileUI) window.appLoadProfileUI();
+                } else if (view === 'history') {
+                    if (window.appLoadHistoryUI) window.appLoadHistoryUI();
+                }
+                
+                // Scroll main content to top on view change
+                document.querySelector('main').scrollTop = 0;
+            }
+
+            window.appLogout = async () => {
+                try {
+                    const confirmed = window.appConfirm ? await window.appConfirm('Are you sure you want to sign out?') : true;
+                    if (!confirmed) return;
+                    if (typeof window.appSignOut === 'function') {
+                        await window.appSignOut();
+                    } else {
+                        location.reload();
+                    }
+                } catch (e) { console.error('Logout failed', e); location.reload(); }
+            };
+
+           
+            window.appToggleChat = () => {
+                isChatOpen = !isChatOpen;
+                chatWindow.classList.toggle('hidden', !isChatOpen);
+                chatWindow.classList.toggle('open', isChatOpen);
+                
+                const icon = document.getElementById('chat-toggle-btn').querySelector('i');
+                icon.className = isChatOpen ? 'ph-fill ph-x' : 'ph-fill ph-chat-text';
+                
+                // If opening, scroll to bottom
+                if (isChatOpen) {
+                    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+                }
+            };
+
+            // --- Chat Message Rendering ---
+            function renderMessage(text, role) {
+                const div = document.createElement('div');
+                div.className = `chat-message ${role === 'user' ? 'chat-user ml-auto' : 'chat-bot mr-auto'}`;
+                div.textContent = text;
+                chatMessagesDiv.appendChild(div);
+                chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+            }
+
+         
+            async function handleSendMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
+
+                const apiKey = localStorage.getItem('gemini_key');
+                if (!apiKey) {
+                    showNotification("Chat requires API Key. Please set it in Settings.", 'error');
+                    return;
+                }
+
+                chatInput.value = '';
+                chatInput.disabled = true;
+                chatSendBtn.disabled = true;
+
+                // 1. Add user message to history and UI
+                chatHistory.push({ role: "user", parts: [{ text: message }] });
+                renderMessage(message, 'user');
+
+                try {
+                    // Start rendering thinking indicator
+                    const indicator = document.createElement('div');
+                    indicator.className = 'chat-message chat-bot mr-auto flex items-center gap-2';
+                    indicator.innerHTML = '<i class="ph ph-dots-three-circle-fill animate-bounce text-lg"></i> Thinking...';
+                    chatMessagesDiv.appendChild(indicator);
+                    chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+
+                    // 2. Prepare payload
+                    const payload = {
+                        contents: chatHistory,
+                        systemInstruction: { parts: [{ text: CHATBOT_SYSTEM_PROMPT }] },
+                    };
+
+                    // 3. API Call with retry logic
+                    let response;
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
+                            if (response.ok) break;
+                            if (response.status === 429) { // Rate limit
+                                await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                            } else {
+                                throw new Error(`API returned status ${response.status}`);
+                            }
+                        } catch (e) {
+                            if (i === 2) throw e;
+                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                        }
+                    }
+
+                    if (!response || !response.ok) throw new Error("Failed to get a response from Archie.");
+
+                    const result = await response.json();
+                    const botResponseText = result.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I ran into an error getting the full response.";
+                    
+                    // 4. Remove thinking indicator
+                    chatMessagesDiv.removeChild(indicator);
+
+                    // 5. Add bot response to history and UI
+                    chatHistory.push({ role: "model", parts: [{ text: botResponseText }] });
+                    renderMessage(botResponseText, 'model');
+
+                } catch (error) {
+                    console.error("Chatbot Error:", error);
+                    showNotification(`Chatbot Failed: ${error.message || "Check API Key and console for details."}`, 'error');
+                } finally {
+                    chatInput.disabled = false;
+                    chatSendBtn.disabled = false;
+                    chatInput.focus();
+                }
+            }
+
+            chatSendBtn.addEventListener('click', handleSendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && !chatSendBtn.disabled) {
+                    e.preventDefault();
+                    handleSendMessage();
+                }
+            });
+
+
+            // --- INTERNAL LOGIC ---
+            const legacyLoginForm = document.getElementById('login-form');
+            if (legacyLoginForm) legacyLoginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const email = document.getElementById('auth-email')?.value || 'dev@local';
+                const password = document.getElementById('auth-password')?.value || 'dev-pass';
+                const errDiv = document.getElementById('auth-error');
+                errDiv.classList.add('hidden');
+                try {
+                    // Bypass: demo sign-in without requiring Firebase auth
+                    if (window.appDemoSignIn) { window.appDemoSignIn(email); }
+                } catch (error) {
+                    // Show friendly UI message (normalized by app.js)
+                    showAuthError((error && error.message) ? error.message.replace('Firebase: ', '') : String(error || 'Unknown error'), error.code || '');
+                    console.error('Auth Error:', error);
+                }
+            });
+            
+            // Email panel toggling functions (exposed for external binding)
+            window.appShowEmailPanel = () => document.getElementById('email-login-panel').classList.remove('hidden');
+            window.appHideEmailPanel = () => document.getElementById('email-login-panel').classList.add('hidden');
+
+            // Open modal in Sign-In mode (explicit), used by the main CTA
+            const emailCta = document.getElementById('email-cta-btn');
+            if (emailCta) emailCta.addEventListener('click', () => {
+                if (window.toggleAuthMode) window.toggleAuthMode(false); // sign-in mode
+                if (window.appShowEmailPanel) window.appShowEmailPanel();
+            });
+
+            // Dedicated Create Account CTA opens email modal in Sign-Up mode
+            const emailCreateCta = document.getElementById('email-create-btn');
+            if (emailCreateCta) emailCreateCta.addEventListener('click', () => {
+                if (window.openCreateAccount) window.openCreateAccount();
+            });
+
+            // Wire close button on the email panel
+            const closeEmailLogin = document.getElementById('close-email-login');
+            if (closeEmailLogin) closeEmailLogin.addEventListener('click', () => { if (window.appHideEmailPanel) window.appHideEmailPanel(); });
+
+            // Social sign-in exposed function (provided by app.js implementation)
+            // When clicking social sign-in, show auth error if app wrapper throws
+            const ghBtnElm = document.getElementById('github-signin-btn');
+            if (ghBtnElm) ghBtnElm.addEventListener('click', async (e) => {
+                try { if (window.appDemoSignIn) { window.appDemoSignIn('github-demo@local'); } else { console.warn('Demo sign-in not available.'); } } catch (error) { showAuthError(error.message || String(error), error.code || ''); }
+            });
+            const googleBtnElm = document.getElementById('google-signin-btn');
+            if (googleBtnElm) googleBtnElm.addEventListener('click', async (e) => {
+                try { if (window.appDemoSignIn) { window.appDemoSignIn('google-demo@local'); } else { console.warn('Demo sign-in not available.'); } } catch (error) { showAuthError(error.message || String(error), error.code || ''); }
+            });
+            const appleBtnElm = document.getElementById('apple-signin-btn');
+            if (appleBtnElm) appleBtnElm.addEventListener('click', async (e) => {
+                try { if (window.appDemoSignIn) { window.appDemoSignIn('apple-demo@local'); } else { console.warn('Demo sign-in not available.'); } } catch (error) { showAuthError(error.message || String(error), error.code || ''); }
+            });
+
+            // Modal form submit handler (exposes the async function for external binding)
+            async function handleModalLoginSubmit(e) {
+                e.preventDefault();
+                const email = document.getElementById('modal-auth-email').value;
+                const password = document.getElementById('modal-auth-password').value;
+                const errDiv = document.getElementById('auth-error');
+                errDiv.classList.add('hidden');
+                try {
+                    // For development flow, bypass Firebase auth and demo sign-in
+                    if (window.appDemoSignIn) { window.appDemoSignIn(email); }
+                } catch (error) {
+                    errDiv.textContent = (error && error.message) ? error.message.replace("Firebase: ", "") : String(error || 'Unknown error');
+                    errDiv.classList.remove('hidden');
+                    console.error('Auth Error:', error);
+                }
+            }
+            window.appHandleModalLoginSubmit = handleModalLoginSubmit;
+            // Attach the submit handler to the modal form
+            const modalLoginForm = document.getElementById('modal-login-form');
+            if (modalLoginForm) modalLoginForm.addEventListener('submit', handleModalLoginSubmit);
+            // If app.js init is present, allow it to attach the handler immediately
+            if (window.ViDeGenApp && typeof window.ViDeGenApp.initAuthHandlers === 'function') {
+                try { window.ViDeGenApp.initAuthHandlers(); } catch(e) { console.warn('Auth handlers init failed in app.js', e); }
+            }
+            
+            // --- Profile Form Submission Handler (delegates to app.js)
+            document.getElementById('profile-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const insta = document.getElementById('profile-insta').value.trim();
+                const phone = document.getElementById('profile-phone').value.trim();
+                const linkedin = document.getElementById('https://www.linkedin.com/in/deepak-prajapati-819b81327/?skipRedirect=true').value.trim();
+                const avatarUrl = document.getElementById('profile-avatar-url').value.trim();
+                const saveBtn = document.getElementById('save-profile-btn');
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = `<i class="ph ph-spinner animate-spin mr-1"></i> Saving...`;
+                saveBtn.disabled = true;
+                try {
+                    if (window.appSaveProfile) await window.appSaveProfile({ insta, phone, linkedin, avatarUrl });
+                    setProfileAvatar(avatarUrl || '');
+                    showNotification('Profile updated successfully!', 'success');
+                } catch (e) {
+                    console.error('Error saving profile:', e);
+                    showNotification('Error saving profile: Check console for details.', 'error');
+                } finally {
+                    saveBtn.innerHTML = originalText;
+                    saveBtn.disabled = false;
+                }
+            });
+            //KEEP BUILDING BUTTON LOGIC
+            
+
+            // --- AUTH ERROR HANDLER (display friendly error & optional debug detail) ---
+            function showAuthError(message, code) {
+                const errDiv = document.getElementById('auth-error');
+                if (!errDiv) return;
+                errDiv.textContent = message || 'Authentication failed.';
+                errDiv.classList.remove('hidden');
+                errDiv.innerHTML = `${message || 'Authentication failed.'}` + (code ? `<div class="text-xs text-zinc-500 mt-1">Error code: <span class="font-mono">${code}</span></div>` : '');
+                console.error('Auth Error:', message, code);
+            }
+
+            // Listen for cross-module auth error events dispatched by app.js
+            window.addEventListener('app:auth-error', (e) => {
+                const detail = e && e.detail ? e.detail : {};
+                showAuthError(detail.message || 'Authentication error.', detail.code || '');
+            });
+            window.addEventListener('app:auth-success', (e) => {
+                const detail = e && e.detail ? e.detail : {};
+                const el = document.getElementById('auth-error'); if (el) el.classList.add('hidden');
+                try { document.getElementById('user-email-header').textContent = (detail.email || '').split('@')[0] || 'User'; } catch(e) {}
+            });
+
+            // --- Copy Code Handler ---
+            copyCodeBtn.addEventListener('click', () => {
+                if (!lastGeneratedCode) {
+                    showNotification("No code generated yet.", 'info');
+                    return;
+                }
+                
+                try {
+                    // Use a temporary text area for copying to clipboard
+                    const textarea = document.createElement('textarea');
+                    textarea.value = lastGeneratedCode;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+
+                    // Visual confirmation
+                    const icon = copyCodeBtn.querySelector('.simple-copy-icon');
+                    const originalIconClass = icon.className;
+                    icon.className = 'ph-bold ph-check-circle mr-1';
+                    showNotification("Code successfully copied to clipboard!", 'success');
+
+                    setTimeout(() => {
+                        icon.className = originalIconClass;
+                    }, 1500);
+
+                } catch (err) {
+                    console.error('Failed to copy text: ', err);
+                    showNotification('Error: Failed to copy code.', 'error');
+                }
+            });
+
+            // load user profile and history UI use app.js implementations
+
+            // --- GENERATION CORE ---
+            generateBtn.addEventListener('click', async () => {
+                const prompt = document.getElementById('prompt-input').value.trim();
+                const framework = document.getElementById('opt-framework').value;
+                const colorPalette = document.getElementById('opt-color-palette').value;
+                const includeAnimations = document.getElementById('opt-animations').checked;
+                const optimizeSEO = document.getElementById('opt-seo').checked;
+                const jsLibrary = document.getElementById('opt-js-library').value;
+                
+                const apiKey = localStorage.getItem('gemini_key');
+
+                if (!apiKey) {
+                    window.appToggleSettings();
+                    showNotification("Security Alert: API Key Missing. Please set it in Settings.", 'error');
+                    return;
+                }
+                if (!prompt) return;
+
+                // Ask for confirmation if there is existing generated code
+                if (lastGeneratedCode) {
+                    const confirmAllowed = window.appConfirm ? await window.appConfirm('A previous build exists. Start a new build (this will overwrite any generated content)?') : true;
+                    if (!confirmAllowed) return;
+                }
+
+                
+                const originalText = generateBtn.innerHTML;
+                generateBtn.innerHTML = `<i class="ph ph-spinner animate-spin mr-2"></i> Architecting...`;
+                generateBtn.disabled = true;
+                copyCodeBtn.disabled = true;
+                lastGeneratedCode = "";
+
+                try {
+                    // CONSTRUCTING ADVANCED SYSTEM PROMPT
+                    const systemPrompt = `
+                    You are ViDeGen.AI, an advanced web architect engine created by Deepak Prajapati. 
+                    Your task is to generate a single-file web application based on the user's prompt and the configuration below.
+
+                    CONFIGURATION:
+                    - Framework: ${framework}
+                    - Color Palette: ${colorPalette}
+                    - Micro-Animations: ${includeAnimations ? 'Enabled' : 'Disabled'}
+                    - SEO Optimization: ${optimizeSEO ? 'Enabled' : 'Disabled'}
+                    - JS Library: ${jsLibrary !== 'None' ? jsLibrary : 'None'}
+
+                    MANDATORY RULES:
+                    1. SINGLE FILE: Combine HTML, CSS (using Tailwind), and JS (or React/Angular components) into one file.
+                    2. AESTHETICS: Use Tailwind CSS, modern design, and adhere to the Color Palette and Animation settings. Ensure it looks amazing on mobile.
+                    3. IMAGES: Use https://image.pollinations.ai/prompt/{keyword}?nologo=true for placeholders.
+                    4. RESPONSE FORMAT: JSON { "code": "...", "description": "..." }
+                    5. FRAMEWORK SPECIFIC: Respond with the requested framework: ${framework}.
+                    `;
+
+                    // Simple retry logic with exponential backoff
+                    let response;
+                    for (let i = 0; i < 3; i++) {
+                        try {
+                            response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    contents: [{ parts: [{ text: prompt }] }],
+                                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                                    generationConfig: { responseMimeType: "application/json" }
+                                })
+                            });
+                            if (response.ok) break;
+                            if (response.status === 429) { // Rate limit
+                                await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                            } else {
+                                throw new Error(`API returned status ${response.status}`);
+                            }
+                        } catch (e) {
+                            if (i === 2) throw e; // Re-throw if last attempt
+                            await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+                        }
+                    }
+                    
+                    if (!response || !response.ok) throw new Error("Failed to get a response from the AI Architect.");
+
+                    const result = await response.json();
+                    const jsonText = result.candidates[0].content.parts[0].text;
+                    let data = JSON.parse(jsonText.replace(/```json|```/g, '').trim());
+
+                    if (data.code) {
+                        document.getElementById('preview-frame').srcdoc = data.code;
+                        document.getElementById('empty-state').classList.add('hidden');
+                        lastGeneratedCode = data.code; // Store the generated code
+                        copyCodeBtn.disabled = false; // Enable copy button
+                        showNotification("Build successful! Code is ready to be copied.", 'success');
+
+                        if (window.appSaveHistoryEntry) {
+                            await window.appSaveHistoryEntry({ prompt: prompt, code: data.code, framework });
+                        }
+                    }
+
+                } catch (error) {
+                    console.error("Generation Error:", error);
+                    showNotification(`Generation Failed: ${error.message || "Check API Key and console for details."}`, 'error');
+                } finally {
+                    generateBtn.innerHTML = originalText;
+                    generateBtn.disabled = false;
+                }
+            });
+
+            // Init
+            document.getElementById('api-key-input').value = localStorage.getItem('gemini_key') || '';
+            // Update avatar preview as user types or pastes URL
+            const avatarInputEl = document.getElementById('profile-avatar-url');
+            if (avatarInputEl) {
+                avatarInputEl.addEventListener('input', (e) => {
+                    const url = (e.target.value || '').trim();
+                    setProfileAvatar(url);
+                });
+            }
+            window.appSetDevice('desktop'); // Initialize device view selector style
+            // Update debug panel content if it exists
+            function _maskApiKey(key) { if (!key) return '(none)'; return key.substring(0,4) + '...' + key.substring(Math.max(0, key.length-4)); }
+            function updateDebugPanel() {
+                const el = document.getElementById('debug-content'); if (!el) return;
+                const cfg = typeof window.__firebase_config !== 'undefined' ? (typeof window.__firebase_config === 'string' ? JSON.parse(window.__firebase_config) : window.__firebase_config) : null;
+                const lines = [];
+                lines.push(`<div><strong>Firebase:</strong> ${cfg ? (cfg.projectId || cfg.authDomain || '(loaded)') : '(not loaded)'}</div>`);
+                if (cfg) lines.push(`<div>apiKey: <span class="font-mono">${_maskApiKey(cfg.apiKey)}</span></div>`);
+                const cur = window.firebaseAuth && window.firebaseAuth.currentUser;
+                lines.push(`<div>auth: <span id="debug-auth-state">${cur ? 'Signed in' : 'No user'}</span></div>`);
+                if (cur) {
+                    lines.push(`<div>email: <span class="font-mono">${cur.email || '(no email)'}</span></div>`);
+                    lines.push(`<div>isAnonymous: <span>${cur.isAnonymous ? 'true' : 'false'}</span></div>`);
+                    lines.push(`<div>uid: <span class="font-mono">${String(cur.uid).substring(0,8)}</span></div>`);
+                }
+                lines.push(`<div>app: <span>${typeof window.firebaseApp !== 'undefined' ? 'Loaded' : 'Not present'}</span></div>`);
+                el.innerHTML = lines.join('');
+            }
+            setInterval(updateDebugPanel, 1000);
+            // If debug panel is enabled, also log click targets to console to debug non-working buttons
+            if (document.getElementById('debug-panel')) {
+                document.body.addEventListener('click', (e) => {
+                    try {
+                        const tid = e.target && e.target.id ? `#${e.target.id}` : '';
+                        const cls = e.target && e.target.className ? `${e.target.className}` : '';
+                        if (document.getElementById('debug-panel').classList.contains('hidden')) return; // only log if visible
+                        console.debug('DEBUG CLICK:', tid, cls, e.target.tagName);
+                    } catch (err) {}
+                });
+            }
+            } catch(e) { console.error('Main script error:', e); }
+        })();
+        // --- CORRECTION: Changed 'userInput' to 'prompt-input' ---
+const keepBuildingButton = document.getElementById('keepBuildingBtn');
+const inputPrompt = document.getElementById('prompt-input'); // Corrected ID
+
+// --- Check if both elements exist before adding the listener ---
+if (keepBuildingButton && inputPrompt) {
+    
+    // --- Attach the event listener ---
+    keepBuildingButton.addEventListener('click', () => {
+        
+        // 1. Scroll the input element into the user's view
+        // Setting 'block: "center"' is a good default, 
+        // but 'block: "start"' might be better if you want the prompt at the top.
+        inputPrompt.scrollIntoView({ 
+            behavior: 'smooth', 
+            block: 'start' // Scrolls the input to the top of the viewport
+        });
+        
+        // 2. Set focus to the input field
+        inputPrompt.focus(); 
+        
+        console.log("Button clicked. Scrolling and focusing prompt-input.");
+    });
+    
+} else {
+    // This will alert you if either ID is still missing
+    console.error("Error: Could not find one or both elements. Check IDs: keepBuildingBtn and prompt-input.");
+}
+    </script>
+    <!-- Optional local secrets file (create secrets.local.js) -->
+    <script>
+        // Attempt to load `secrets.local.js` if it exists (this is local-only and ignored by .gitignore)
+        (function(){
+            try {
+                var s = document.createElement('script'); s.src = './secrets.local.js'; s.async = false; document.head.appendChild(s);
+            } catch(e) {}
+        })();
+        //Advanced Option logic
+        // --- JavaScript to toggle the advanced options view ---
+
+const toggleButton = document.getElementById('toggle-advanced-btn');
+const advancedContent = document.getElementById('advanced-options-content');
+
+// Check if both elements exist
+if (toggleButton && advancedContent) {
+    
+    // Initial button text (since it starts hidden)
+    toggleButton.innerHTML = '<i class="ph-fill ph-gear"></i> Show Advanced Options';
+
+    // Add click listener
+    toggleButton.addEventListener('click', toggleAdvancedOptions);
+}
+
+function toggleAdvancedOptions() {
+    // 1. Toggle the 'hidden' class
+    advancedContent.classList.toggle('hidden');
+
+    // 2. Update the button text and icon based on visibility
+    const isHidden = advancedContent.classList.contains('hidden');
+    
+    if (isHidden) {
+        toggleButton.innerHTML = '<i class="ph-fill ph-gear"></i> Show Advanced Options';
+    } else {
+        toggleButton.innerHTML = '<i class="ph-fill ph-x-circle"></i> Hide Advanced Options';
+        
+        // Optional: Scroll to the top of the newly expanded content
+        advancedContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+//color chnaging of the whole website background 
+const paletteSelector = document.getElementById('opt-color-palette');
+        const body = document.body;
+
+        paletteSelector.addEventListener('change', (event) => {
+            const selectedTheme = event.target.value;
+            
+            // This sets a data attribute on the <body> tag
+            // CSS looks for this attribute to switch variables
+            body.setAttribute('data-theme', selectedTheme);
+        });
+        
+    </script>
+    <!-- App JS: initialize UI and event handlers -->
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="./server.js"></script>
+    
+    <div class="mt-12 p-8 glass-panel-app">
+    
+    <h2 class="metallic-text text-3xl md:text-3xl font-extrabold tracking-tight drop-[0_4px_8px_rgba(255,255,255,0.2)]">
+        GENERATED PORTFOLIO ASSEST.
+    </h2>
+    
+    <div id="image-gallery" class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        
+        <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-800/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/31108166/file/original-b24ff9528e39f95040dd4e7c86e3e316.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 1" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+        
+        <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/45425586/file/a56ab75abf4c6e52348f7a82fc57e366.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 2" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+        
+        <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/19422955/file/original-1515692bcaf6f39a4610254a0914ccf5.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 3" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+        
+        <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/5919109/file/original-4211d5e9e9cd11f361534562bae23b98.png?crop=0x0-2400x1800&format=webp&resize=640x480&vertical=center" alt="Generated Asset 4" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+        
+
+         <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/31833699/file/still-c9e325c6c99bc26223c9ec8d6b1c8405.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 2" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+         <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/17818156/file/still-6549ad3bd74ea2cb6b983ac72c213d43.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 2" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+         <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/11770325/file/still-ecf4b75d88b1556d13668e5a6d103407.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 2" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+         <div class="gallery-item-frame relative group cursor-pointer overflow-hidden rounded-lg shadow-xl border border-cyan-800/50 hover:shadow-cyan-500/30 transition-shadow">
+            <img src="https://cdn.dribbble.com/userupload/25286809/file/original-0a2ba3c6dd8a133111981eb7414e28a8.png?format=webp&resize=640x480&vertical=center" alt="Generated Asset 2" class="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105">
+            <div class="image-overlay absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-white text-xl font-bold border border-white p-2">VIEW FILE</span>
+            </div>
+        </div>
+        
+    </div>
+</div>
+<section class="p-16 text-center bg-black">
+    <h1 class="metallic-text text-6xl md:text-8xl font-extrabold tracking-tight drop-shadow-[0_4px_8px_rgba(255,255,255,0.2)]">
+        BUILD YOUR  DREAM WEBAPP
+    </h1>
+    <p class="text-xl text-zinc-500 mt-4 font-medium tracking-wider">
+        Built By Deepak Prajapati
+    </p>
+</section>
+<footer class="mt-12 py-8 border-t border-zinc-800">
+                <div class="text-center">
+                    <p class="text-zinc-400 text-lg mb-4"></p>
+                    
+                    <!-- Requested Contact Links -->
+                    <div class="flex justify-center items-center gap-6">
+    <div class="flex items-center space-x-6 text-xl">
+        
+        <a id="footer-instagram" href="https://www.instagram.com/deepakprajapati8254/" target="_blank" rel="noopener noreferrer" 
+           class="group transition-transform duration-200 hover:scale-110" title="Instagram">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-pink-500/50">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/330px-Instagram_logo_2016.svg.png?20210403190622" alt="Instagram Logo" class="w-6 h-6" />
+            </div>
+        </a>
+        
+        <a id="footer-phone" href="" class="group text-green-400 hover:text-green-300 transition-colors" title="Call Me">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-green-500/50">
+                <i class="ph-fill ph-phone-call text-green-500 text-xl group-hover:text-green-600"></i>
+            </div>
+        </a>
+        
+        <a id="footer-linkedin" href="https://www.linkedin.com/in/deepak-prajapati-819b81327/" target="_blank" rel="noopener noreferrer" 
+           class="group transition-transform duration-200 hover:scale-110" title="LinkedIn">
+            <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg group-hover:shadow-blue-500/50">
+                <img src="https://www.svgrepo.com/show/157006/linkedin.svg" alt="LinkedIn Logo" class="w-6 h-6" />
+            </div>
+        </a>
+        
+    </div>
+</div>
+
+                    <p class="text-zinc-600 text-lg mt-6">&copy; 2024 ViDeGen.AI. All Rights Reserved.</p>
+                </div>
+                <div class="flex justify-center">
+                    <button 
+                            id="keepBuildingBtn" 
+                                class="bg-white text-black text-lg font-bold py-4 px-6 rounded-full 
+                                    border border-zinc-900 shadow-2xl shadow-zinc-900/50 
+                                    transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
+                                Keep Building
+                            </button>
+                        </div>
+            </footer>
+        </main>
+        
+        
+</body>
+</html>
