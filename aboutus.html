@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About ViDeGen AI - Our Mission and Technology</title>
+    <style>
+        /* ===================================================
+           1. CSS Variables (Maintaining Previous Dark Theme)
+           =================================================== */
+        :root {
+            --bg-color: #0d1117;        /* Very dark background (main body) */
+            --bg-secondary: #161b22;    /* Slightly lighter background for sections */
+            --text-color-main: #d1d5db; /* Medium gray for large headings */
+            --text-color-light: #e6e6e6; /* Lighter color for body text */
+            --accent-color: #38bdf8;    /* Bright blue accent */
+            --subtle-text: #9ca3af;     /* Subdued gray for subheadings/descriptions */
+            --card-bg: #1f2937;         /* Dark background for feature cards */
+            --card-border: #374151;     /* Subtle border color for cards */
+        }
+
+        /* ===================================================
+           2. Base & Utility Styles
+           =================================================== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: var(--bg-color); 
+            color: var(--text-color-light); 
+            line-height: 1.6;
+        }
+
+        /* Container for content width (similar to max-w-6xl) */
+        .container {
+            max-width: 1152px; /* 72rem */
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        /* Headings & Text */
+        .section-tag {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 600;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .section-title {
+            font-size: 2.25rem; /* text-3xl/4xl */
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-color-main);
+            margin-bottom: 1rem;
+        }
+        .text-body {
+            font-size: 1.125rem; /* text-lg */
+            color: var(--subtle-text);
+        }
+
+        /* Action Button */
+        .cta-button {
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--bg-color);
+            background-color: var(--accent-color);
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.4);
+        }
+        .cta-button:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+
+        /* Grid utilities for features */
+        .grid {
+            display: grid;
+            gap: 2rem;
+        }
+        @media (min-width: 768px) {
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ===================================================
+           3. Section Specific Styles
+           =================================================== */
+
+        /* Hero/Introduction Section */
+        #about-hero {
+            padding: 6rem 0;
+            background-color: var(--bg-secondary); /* Slight difference from main body */
+        }
+        #about-hero .main-content {
+            max-width: 60rem; /* Tighter width for better reading */
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        /* Purpose Section (Two Columns) */
+        #purpose {
+            padding: 5rem 0;
+            display: flex;
+            align-items: center; 
+            gap: 4rem;
+        }
+        #purpose .image-container {
+            flex-shrink: 0; 
+            width: 45%; 
+            max-width: 400px;
+            /* Placeholder styling to mimic the image's dark border/glow */
+            border-radius: 0.5rem;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+        #purpose .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 0.5rem;
+            object-fit: cover;
+        }
+        #purpose .text-content {
+            flex-grow: 1;
+        }
+        .purpose-text-columns {
+            display: flex;
+            gap: 1.5rem; 
+            font-size: 0.95rem; 
+            color: var(--subtle-text);
+        }
+
+        /* Mobile View for Purpose Section */
+        @media (max-width: 1024px) {
+             #purpose {
+                flex-direction: column; 
+                text-align: center;
+             }
+             #purpose .image-container {
+                width: 100%;
+                max-width: 400px; 
+             }
+             #purpose .text-content {
+                text-align: center;
+             }
+             .purpose-text-columns {
+                flex-direction: column; /* Stacks text columns on mobile */
+                gap: 0.75rem;
+             }
+        }
+        
+        /* Technology Section (Feature Cards) */
+        #technology {
+            padding: 5rem 0 8rem;
+        }
+        .tech-card {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+        .tech-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 0.75rem;
+            /* Using Unicode characters for the icons as in the mockup */
+        }
+        .tech-card h4 {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        .tech-card p {
+            font-size: 0.9rem;
+            color: var(--subtle-text);
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <section id="about-hero">
+        <div class="container main-content">
+            <span class="section-tag">About Hero</span>
+            <h1 class="section-title" style="font-size: 3rem;">
+                Empowering the Future of Web Development
+            </h1>
+            <p class="text-body" style="margin-bottom: 2rem;">
+                ViDeGen AI is an innovative platform that transforms plain language into high-fidelity, production-ready websites, instantly.
+            </p>
+            <button class="cta-button">Join Our Journey</button>
+        </div>
+    </section>
+    
+    <section id="purpose" class="container">
+        
+        <div class="image-container">
+            <img src="https://thumbs.dreamstime.com/b/robot-hand-touching-web-hologram-futuristic-technology-ai-finger-glowing-hud-diverse-internet-icons-security-global-283997577.jpg" 
+                 alt="Digital illustration of an AI brain/circuitry" 
+                 loading="lazy">
+        </div>
+
+        <div class="text-content">
+            <span class="section-tag">Our Purpose</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">
+                Mission: To Democratize Web Creation
+            </h2>
+            <div class="purpose-text-columns">
+                <p>
+                    We believe that everyone should be able to turn down the bare web, responsive, static sites to bring you the answers you ask for.
+                </p>
+                <p>
+                   To accelerate the idea-to-deployment time for websites, making professional-grade web presence accessible to everyone, regardless of coding expertise.
+                </p>
+            </div>
+        </div>
+    </section>
+    <section id="purpose" class="container" style="display: flex; flex-direction: row-reverse;">
+
+        
+        <div class="image-container">
+            <img src="https://img.freepik.com/free-photo/programming-background-collage_23-2149901770.jpg?semt=ais_hybrid&w=740&q=80" 
+                 alt="Digital illustration of an AI brain/circuitry" 
+                 loading="lazy">
+        </div>
+
+        <div class="text-content">
+            <span class="section-tag">Our Purpose</span>
+            <h2 class="section-title" style="margin-bottom: 0.5rem;">
+                Mission: To Democratize Web Creation
+            </h2>
+            <div class="purpose-text-columns">
+                <p>
+                   To Democratize Web Creation by empowering users to bypass traditional coding barriers and generate high-fidelity websites instantly..
+                </p>
+                <p>
+                   Guided by the principles of Innovation, Code Integrity, Universal Access, and fostering a strong Developer Community..
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="technology" class="container">
+        <div style="max-width: 60rem; margin: 0 auto; text-align: left;">
+            <span class="section-tag">Technology</span>
+            <h2 class="section-title">
+                How It Works: The Power of Instant Development AI
+            </h2>
+            <p class="text-body" style="margin-bottom: 2.5rem;">
+                Our proprietary AI model is trained on millions of examples, and fine-tuned to generate pixel-perfect websites you get back from your fast lines and minimally.
+            </p>
+        </div>
+
+        <div class="grid md\:grid-cols-3">
+            
+            <div class="tech-card">
+                <div class="tech-icon">🧠</div>
+                <h4>Advanced NLP</h4>
+                <p>Understands & interprets and prediction design for amateur coder needs.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">✨</div>
+                <h4>High-Fidelity Code</h4>
+                <p>Generates clean, semantic & production-ready HTML/CSS/Tailwind.</p>
+            </div>
+
+            <div class="tech-card">
+                <div class="tech-icon">⚙️</div>
+                <h4>Customizable</h4>
+                <p>Easily modify existing elements and generated code to fit your needs.</p>
+            </div>
+        </div>
+    </section>
+
+</body>
+</html>

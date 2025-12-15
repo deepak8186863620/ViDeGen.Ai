@@ -1,34 +1,246 @@
-<section id="hero" class="py-24 text-center" style="background-color: var(--bg-color); color: var(--text-color);">
-    <div class="max-w-4xl mx-auto px-4">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViDeGen AI: Generate High-Fidelity Websites Instantly</title>
+    
+    <style>
+        /* ===================================================
+           1. CSS Variables for Dark Theme Consistency
+           =================================================== */
+        :root {
+            --bg-color: #0d1117;        /* Very dark background */
+            --text-color-main: #d1d5db; /* Medium gray for large headings */
+            --text-color-light: #e6e6e6; /* Lighter color for description/button text */
+            --accent-color: #38bdf8;    /* Bright blue accent */
+            --subtle-text: #9ca3af;     /* Subdued gray for subheadings and feature description */
+            --card-bg: #1a202c;         /* Slightly lighter dark background for feature cards */
+            --card-border: #2d3748;     /* Subtle border color for cards */
+        }
+
+        /* ===================================================
+           2. Base & Utility Styles (mimicking Tailwind classes)
+           =================================================== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: var(--bg-color); 
+            color: var(--text-color-light); 
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        /* Container for content width */
+        .container {
+            max-width: 72rem; /* Max-w-6xl */
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        /* Responsive Grid Setup */
+        .grid {
+            display: grid;
+        }
+        .gap-8 {
+            gap: 2rem;
+        }
+        .text-left {
+            text-align: left;
+        }
+
+        /* Responsive Breakpoint for Grid */
+        @media (min-width: 768px) {
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
         
-        <img 
-            src="https://static.vecteezy.com/system/resources/thumbnails/034/810/104/small_2x/graphic-illustration-of-tribal-art-design-flying-dragon-spitting-fire-free-vector.jpg" 
-            alt="ViDeGen AI Dragon Logo - Tribal Art" 
-            class="mx-auto mb-8 h-24 object-contain filter drop-shadow-lg"
-            style="filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7)); /* Applies a subtle glow matching the accent color */"
-        >
-        <p class="text-sm font-semibold uppercase tracking-widest mb-4" style="color: var(--accent-color);">
-            The Future of Web Development
-        </p>
+        /* ===================================================
+           3. Hero Section Specific Styles
+           =================================================== */
+        #hero {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+            min-height: 80vh; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo-image {
+            height: 96px; 
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.7)); 
+        }
+        .subheading {
+            font-size: 0.75rem; /* text-sm */
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 0.1em; 
+            margin-bottom: 0.5rem; 
+            color: var(--subtle-text);
+        }
+        .main-heading {
+            font-size: 4rem; /* text-6xl/7xl */
+            font-weight: 900; 
+            line-height: 1.1; 
+            margin-bottom: 1.5rem;
+            color: var(--text-color-main); 
+        }
+        .description-text {
+            font-size: 1.25rem; /* text-xl */
+            opacity: 0.8;
+            margin-bottom: 3rem; 
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-        <h1 class="text-6xl md:text-7xl font-extrabold mb-6 leading-tight">
-            Generate <span style="color: var(--accent-color);">High-Fidelity Websites</span> Instantly
-        </h1>
+        /* Primary Action Button Style */
+        .action-button {
+            padding: 1rem 2.5rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: var(--text-color-light);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            background-color: #1f2937; 
+            border: 1px solid rgba(56, 189, 248, 0.2); 
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+        }
+        .action-button:hover {
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.4);
+            transform: scale(1.02);
+        }
 
-        <p class="text-xl opacity-80 mb-10">
-            Turn your plain language prompts into functional, clean, and customizable Tailwind CSS or pure HTML/CSS code.
-        </p>
+        /* ===================================================
+           4. Features Section Specific Styles
+           =================================================== */
+        #features {
+            padding-top: 5rem;
+            padding-bottom: 5rem;
+        }
+        .feature-card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.3s ease-in-out;
+            background-color: var(--card-bg); 
+            border: 1px solid var(--card-border); 
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            height: 100%; /* Ensure all cards are same height */
+        }
+        .feature-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+        .feature-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
+        }
+        .feature-title {
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color-light);
+        }
+        .feature-description {
+            font-size: 0.875rem; /* text-sm */
+            color: var(--subtle-text);
+        }
+        
+        /* Secondary Action Button (for features section) */
+        .secondary-button {
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background-color: var(--accent-color); 
+            color: var(--bg-color); /* Dark text on accent color */
+            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.6);
+        }
+        .secondary-button:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
 
-        <button class="py-4 px-10 rounded-xl font-bold text-lg shadow-2xl transition-all duration-200 
-            hover:scale-[1.02] hover:opacity-95 active:scale-[0.98]"
-            style="background-color: var(--accent-color); 
-                   color: var(--bg-color); 
-                   box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);">
-            Start Building Now (It's Free!)
-        </button>
+    </style>
+</head>
+<body>
+    
+    <section id="hero">
+        <div class="container" style="max-width: 48rem;">
+            
+            <img 
+                src="https://static.vecteezy.com/system/resources/thumbnails/034/810/104/small_2x/graphic-illustration-of-tribal-art-design-flying-dragon-spitting-fire-free-vector.jpg" 
+                alt="ViDeGen AI Dragon Logo - Tribal Art" 
+                class="logo-image"
+            >
+            
+            <p class="subheading">The Future of Web Development</p>
+            
+            <h1 class="main-heading">
+                Generate High-Fidelity Websites Instantly
+            </h1>
+            
+            <p class="description-text">
+                Turn your plain language prompts into functional, clean, and customizable Tailwind CSS or pure HTML/CSS code.
+            </p>
 
-        <p class="text-xs opacity-50 mt-4">
-            No credit card required. Trusted by 10,000+ developers and designers.
-        </p>
-    </div>
-</section>
+            <button class="action-button">
+                Start Building Now (It's Free!)
+            </button>
+        </div>
+    </section>
+    
+    <section id="features">
+        <div class="container">
+            
+            <h2 class="main-heading" style="font-size: 2.25rem; margin-bottom: 0.75rem;">
+                🔥 What We Provide
+            </h2>
+            <p class="description-text" style="margin-bottom: 3rem; font-size: 1.125rem;">
+                Leverage the power of AI to build websites without writing boiler plate code.
+            </p>
+
+            <div class="grid md:grid-cols-3 gap-8 text-left">
+                
+                <div class="feature-card">
+                    <div class="feature-icon">✨</div>
+                    <h3 class="feature-title">Pixel-Perfect Designs</h3>
+                    <p class="feature-description">
+                        Our AI generates production-ready code that matches modern design standards, ensuring your website looks professional on any device.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🛠️</div>
+                    <h3 class="feature-title">Tailwind & Pure CSS/HTML</h3>
+                    <p class="feature-description">
+                        Choose your output style. Get clean, utility-first **Tailwind CSS** or simple, elegant **Pure HTML/CSS**, ready for customization.
+                    </p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3 class="feature-title">Start Building Instantly</h3>
+                    <p class="feature-description">
+                        Simply type your request and receive the full code. No complex installations, dependencies, or sign-up hurdles needed.
+                    </p>
+                </div>
+            </div>
+
+            <div style="margin-top: 4rem;">
+                <button class="secondary-button">
+                    Try ViDeGen AI Now
+                </button>
+            </div>
+        </div>
+    </section>
+
+    </body>
+</html>
