@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViDeGen AI - Our Services</title>
+    <style>
+        /* ===================================================
+           1. CSS Variables (Consistent Dark Theme)
+           =================================================== */
+        :root {
+            --bg-color: #09090a;        /* Very dark background (main body) */
+            --bg-secondary: #0c0c0c;    /* Slightly lighter background for sections/cards */
+            --text-color-main: #d1d5db; /* Medium gray for large headings */
+            --text-color-light: #e6e6e6; /* Lighter color for body text */
+            --accent-color: #38bdf8;    /* Bright blue accent */
+            --subtle-text: #ddeaec;     /* Subdued gray for descriptions */
+            --card-bg: #0e0202;         /* Dark background for feature/FAQ items */
+            --card-border: #e3ebb2;     /* Subtle border color */
+            --border-hover: #e3ebb2;    /* Border on hover for interactive elements */
+        }
+
+        /* ===================================================
+           2. Base & Utility Styles
+           =================================================== */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            background-color: var(--bg-color); 
+            color: var(--text-color-light); 
+            line-height: 1.6;
+            text-align: center; /* Default text alignment */
+        }
+
+        /* Container for content width */
+        .container {
+            max-width: 1152px; /* 72rem */
+            margin: 0 auto;
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+
+        /* Section Headings & Text */
+        .section-tag {
+            font-size: 0.875rem; 
+            font-weight: 600;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .section-title {
+            font-size: 2.5rem; /* Slightly larger for main services title */
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-color-main);
+            margin-bottom: 1rem;
+        }
+        .section-description {
+            font-size: 1.125rem; 
+            color: var(--subtle-text);
+            max-width: 700px;
+            margin: 0 auto 3rem auto;
+        }
+
+        /* Grid for Services Cards */
+        .grid {
+            display: grid;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* ===================================================
+           3. Services Section Specific Styles
+           =================================================== */
+        #services-hero {
+            padding: 6rem 0;
+            background-color: var(--bg-secondary);
+        }
+        #services-list {
+            padding: 5rem 0;
+        }
+        .service-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: left;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex; /* For icon alignment */
+            flex-direction: column;
+        }
+        .service-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(16, 0, 0, 0.3);
+        }
+        .service-card .icon {
+            font-size: 2.5rem; /* Larger icon */
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+            flex-shrink: 0; /* Prevent icon from shrinking */
+        }
+        .service-card h3 {
+            font-size: 1.5rem; /* Larger title for services */
+            font-weight: 700;
+            color: var(--text-color-light);
+            margin-top: 0;
+            margin-bottom: 0.75rem;
+        }
+        .service-card p {
+            font-size: 1rem;
+            color: var(--subtle-text);
+            margin-bottom: 0;
+            flex-grow: 1; /* Allows description to take up available space */
+        }
+        .service-card ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 1rem;
+        }
+        .service-card ul li {
+            font-size: 0.95rem;
+            color: var(--subtle-text);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .service-card ul li::before {
+            content: '✓'; /* Checkmark icon */
+            color: var(--accent-color);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+        
+        /* ===================================================
+           4. FAQ Section Specific Styles (for JavaScript logic)
+           =================================================== */
+        #faq {
+            padding: 5rem 0 8rem;
+            background-color: var(--bg-color); /* Matches body background */
+        }
+        .faq-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            overflow: hidden; /* Important for smooth height transitions */
+            text-align: left;
+            transition: border-color 0.2s ease;
+        }
+        .faq-item:hover {
+            border-color: var(--border-hover);
+        }
+        .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.25rem 1.5rem;
+            cursor: pointer;
+            font-size: 1.125rem; /* text-lg */
+            font-weight: 600;
+            color: var(--text-color-light);
+            background-color: transparent; /* Ensures background is only card-bg */
+            border: none;
+            width: 100%;
+            text-align: left;
+        }
+        .faq-question:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px var(--accent-color); /* Focus ring */
+        }
+        .faq-question .toggle-icon {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            transition: transform 0.2s ease;
+        }
+        .faq-question.active .toggle-icon {
+            transform: rotate(180deg); /* Rotate icon when active */
+        }
+        .faq-answer {
+            padding: 0 1.5rem 1.25rem;
+            font-size: 1rem;
+            color: var(--subtle-text);
+            max-height: 0; /* Hidden by default */
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+        }
+        .faq-answer.active {
+            max-height: 200px; /* Adjust as needed for max answer height */
+            padding-top: 0.5rem; /* Adds a bit of padding when open */
+        }
+    </style>
+</head>
+<body>
+
+    <section id="services-hero">
+        <div class="container" style="max-width: 60rem;">
+            <span class="section-tag">Our Offerings</span>
+            <h1 class="section-title">
+                Seamless Web Creation for Everyone
+            </h1>
+            <p class="section-description">
+                ViDeGen AI provides a suite of powerful services designed to streamline your web development workflow, from concept to code.
+            </p>
+        </div>
+    </section>
+
+    <section id="services-list" class="container">
+        <span class="section-tag">Core Services</span>
+        <h2 class="section-title" style="font-size: 2rem;">
+            What ViDeGen AI Delivers
+        </h2>
+        <p class="section-description">
+            Experience the future of web development with our intelligent, efficient, and flexible solutions.
+        </p>
+
+        <div class="grid lg\:grid-cols-3 md\:grid-cols-2">
+            
+            <div class="service-card">
+                <div class="icon">📝</div>
+                <h3>Prompt-to-Code Generation</h3>
+                <p>Instantly transform your natural language descriptions into complete, production-ready web code.</p>
+                <ul>
+                    <li>Intuitive text input</li>
+                    <li>Fast generation speeds</li>
+                    <li>Highly accurate interpretations</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">✨</div>
+                <h3>High-Fidelity UI/UX</h3>
+                <p>Receive visually stunning and fully responsive designs that meet modern user experience standards.</p>
+                <ul>
+                    <li>Modern aesthetic principles</li>
+                    <li>Responsive across all devices</li>
+                    <li>Semantic HTML structure</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">⚙️</div>
+                
+                <h3>Framework & Style Flexibility</h3>
+                <p>Choose the output format that best suits your project's needs and your team's expertise.</p>
+                <ul>
+                    <li>Clean Tailwind CSS</li>
+                    <li>Pure HTML/CSS</li>
+                    <li>Easy-to-customize code</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🚀</div>
+                <h3>Rapid Prototyping</h3>
+                <p>Quickly generate functional prototypes for new ideas, client presentations, or A/B testing.</p>
+                <ul>
+                    <li>Accelerated development cycles</li>
+                    <li>Reduced time-to-market</li>
+                    <li>Ideal for quick iterations</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🛠️</div>
+                <h3>Code Refinement & Expansion</h3>
+                <p>Input existing code snippets and prompts to refine elements or expand sections of your website.</p>
+                <ul>
+                    <li>Intelligent code completion</li>
+                    <li>Style consistency enforcement</li>
+                    <li>Component generation</li>
+                </ul>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">📚</div>
+                <h3>Learning & Documentation</h3>
+                <p>Generate commented code that serves as an excellent learning resource for new web developers.</p>
+                <ul>
+                    <li>Well-structured code</li>
+                    <li>Inline comments for clarity</li>
+                    <li>Best practice examples</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="container">
+        <span class="section-tag">Questions & Answers</span>
+        <h2 class="section-title" style="font-size: 2rem;">
+            Frequently Asked Questions
+        </h2>
+        <p class="section-description">
+            Find quick answers to common questions about ViDeGen AI's services and functionality.
+        </p>
+
+        <div style="max-width: 800px; margin: 0 auto;">
+            
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    What kind of websites can ViDeGen AI generate?
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="faq-answer">
+                    <p>ViDeGen AI can generate a wide range of static, responsive websites, including landing pages, portfolios, small business sites, and informational pages. It's ideal for projects that primarily involve HTML and CSS structures, with support for modern frameworks like Tailwind CSS.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Do I need to know how to code to use ViDeGen AI?
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Not at all! ViDeGen AI is designed for both beginners and experienced developers. You can use plain language prompts, and the AI will handle the code generation. For those who want more control, the generated code is clean and easily customizable.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Can I integrate the generated code with existing projects?
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Absolutely! The code outputted by ViDeGen AI is modular and clean, whether it's Pure HTML/CSS or Tailwind CSS. You can easily copy and paste sections, components, or even entire pages into your existing web projects.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question" aria-expanded="false">
+                    Is the generated code mobile-responsive?
+                    <span class="toggle-icon">▼</span>
+                </button>
+                <div class="faq-answer">
+                    <p>Yes, all code generated by ViDeGen AI is built with responsiveness in mind. It automatically adapts to various screen sizes, ensuring your website looks great on desktops, tablets, and mobile devices.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // JavaScript Logic for the FAQ Section
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling; // Get the next sibling (the answer div)
+
+                    // Toggle the 'active' class on the question button
+                    question.classList.toggle('active');
+                    // Toggle the 'active' class on the answer div
+                    answer.classList.toggle('active');
+
+                    // Accessibility: Update aria-expanded attribute
+                    const isExpanded = question.classList.contains('active');
+                    question.setAttribute('aria-expanded', isExpanded);
+
+                    // Optional: Close other open FAQs when one is opened
+                    // faqQuestions.forEach(otherQuestion => {
+                    //     if (otherQuestion !== question && otherQuestion.classList.contains('active')) {
+                    //         otherQuestion.classList.remove('active');
+                    //         otherQuestion.nextElementSibling.classList.remove('active');
+                    //         otherQuestion.setAttribute('aria-expanded', 'false');
+                    //     }
+                    // });
+                });
+            });
+        });
+    </script>
+
+</body>
+</html>
