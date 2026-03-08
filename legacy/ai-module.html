@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .pg-btn.active { background: rgba(56, 189, 248, 0.2); border-color: #38bdf8; color: #38bdf8; }
+        .listening-pulse { animation: pulse 1.5s infinite; background: #ef4444 !important; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+    </style>
+</head>
+<body class="bg-[#161b22] text-gray-200 p-4">
+
+    <div class="mb-6">
+        <h3 class="text-xs font-bold text-sky-400 uppercase tracking-widest mb-3">1. Build Your Prompt</h3>
+        <div class="flex flex-wrap gap-2 mb-4" id="type-group">
+            <button class="pg-btn border border-zinc-700 px-3 py-1 rounded text-sm hover:bg-zinc-800" onclick="updateSel('type', 'Portfolio', this)">Portfolio</button>
+            <button class="pg-btn border border-zinc-700 px-3 py-1 rounded text-sm hover:bg-zinc-800" onclick="updateSel('type', 'Landing Page', this)">Landing Page</button>
+            <button class="pg-btn border border-zinc-700 px-3 py-1 rounded text-sm hover:bg-zinc-800" onclick="updateSel('type', 'Dashboard', this)">Dashboard</button>
+        </div>
+        <div class="flex flex-wrap gap-2" id="style-group">
+            <button class="pg-btn border border-zinc-700 px-3 py-1 rounded text-sm hover:bg-zinc-800" onclick="updateSel('style', 'Minimalist', this)">Minimalist</button>
+            <button class="pg-btn border border-zinc-700 px-3 py-1 rounded text-sm hover:bg-zinc-800" onclick="updateSel('style', 'Cyberpunk', this)">Cyberpunk</button>
+        </div>
+    </div>
+
+    <div class="relative mb-6">
+        <button id="voice-btn" class="w-full py-3 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-semibold rounded-lg flex items-center justify-center gap-3">
+            <span id="voice-icon" class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-red-500 text-white font-bold">🎤</span>
+            <span id="voice-label">Voice Assistant</span>
+        </button>
+        <p id="voice-status" class="text-[10px] text-center mt-2 text-zinc-500">Say "Generate" to build or "Stop" to cancel</p>
+    </div>
+
+    <button id="main-gen-btn" class="w-full py-4 bg-sky-500 text-black font-black rounded-lg opacity-50 cursor-not-allowed transition-all">GENERATE WEBSITE</button>
+
+    <script type="module">
+        import { GoogleGenerativeAI } from "https://esm.run/@google/generative-ai";
+
+        const API_KEY = "YOUR_GEMINI_API_KEY";
+        const genAI = new GoogleGenerativeAI(API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        let state = { type: "", style: "" };
+        const voiceBtn = document.getElementById('voice-btn');
+        const genBtn = document.getElementById('main-gen-btn');
+
+        // Selection Logic
+        window.updateSel = (cat, val, el) => {
+            el.parentElement.querySelectorAll('.pg-btn').forEach(b => b.classList.remove('active'));
+            el.classList.add('active');
+            state[cat] = val;
+            if(state.type && state.style) genBtn.classList.replace('opacity-50', 'opacity-100'), genBtn.classList.remove('cursor-not-allowed');
+        };
+
+        // Voice Logic
+        const Speech = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recog = new Speech();
+        recog.onresult = (e) => handleVoice(e.results[0][0].transcript);
+
+        voiceBtn.onclick = () => {
+            if(voiceBtn.classList.contains('listening')) { stopAll(); } 
+            else { voiceBtn.classList.add('listening'); document.getElementById('voice-icon').classList.add('listening-pulse'); recog.start(); }
+        };
+
+        function stopAll() {
+            recog.stop();
+            window.speechSynthesis.cancel();
+            voiceBtn.classList.remove('listening');
+            document.getElementById('voice-icon').classList.remove('listening-pulse');
+        }
+
+        async function handleVoice(text) {
+            console.log("Voice:", text);
+            if(text.toLowerCase().includes("stop")) return stopAll();
+            
+            speak("Processing your request...");
+            const result = await model.generateContent(text);
+            const response = await result.response.text();
+            
+            // Send code back to parent index.html
+            window.parent.postMessage({ type: 'CODE_READY', code: response }, '*');
+            speak("Generation complete. Check your editor.");
+            stopAll();
+        }
+
+        function speak(text) {
+            const ut = new SpeechSynthesisUtterance(text);
+            window.speechSynthesis.speak(ut);
+        }
+
+        // Manual Generate Click
+        genBtn.onclick = async () => {
+            genBtn.innerText = "AI IS THINKING...";
+            const prompt = `Create a ${state.style} ${state.type} website code. Return ONLY HTML/CSS/JS.`;
+            const result = await model.generateContent(prompt);
+            window.parent.postMessage({ type: 'CODE_READY', code: await result.response.text() }, '*');
+            genBtn.innerText = "GENERATE WEBSITE";
+        };
+    </script>
+</body>
+</html>

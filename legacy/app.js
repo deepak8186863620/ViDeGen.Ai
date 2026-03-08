@@ -197,3 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Make global for your inline onclicks (if any remain)
     window.toggleAuthMode = () => setAuthMode(isLoginMode ? 'signup' : 'login');
 });
+window.onload = () => {
+    fetch('/ping') // or http://localhost:3000/ping
+        .then(response => {
+            if(response.ok) console.log("✅ Frontend linked to Server");
+            else console.error("❌ Server reached but returned an error");
+        })
+        .catch(err => console.error("❌ Cannot reach Server. Is it running?"));
+};

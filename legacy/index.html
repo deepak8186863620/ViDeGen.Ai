@@ -19,6 +19,33 @@
             user-select: none;
             -webkit-user-select: none;
         }
+        /*new 
+        /* Ensure the wrapper centers the mobile frame */
+#preview-wrapper {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    background: #18181b; /* Dark background to make the mobile frame pop */
+    overflow-y: auto;
+}
+
+/* Desktop: Default full size */
+.device-desktop {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Mobile: iPhone 14 dimensions */
+.device-mobile {
+    width: 393px !important;
+    height: 852px !important;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border-radius: 32px !important;
+    border: 12px solid #000 !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+}
+
         
         /* REFINED GLASS PANEL for Auth Screen */
         .glass-panel { 
@@ -197,7 +224,7 @@
         <div class="flex items-center space-x-6 text-sm font-medium" style="color: var(--text-color);">
             <a href="home.html" class="hover:text-[var(--accent-color)] transition-colors">Home</a>
             <a href="aboutus.html" class="hover:text-[var(--accent-color)] transition-colors">About Us</a>
-            <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Services</a>
+            <a href="service.html" class="hover:text-[var(--accent-color)] transition-colors">Services</a>
             <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Verify</a>
             <a href="#" class="hover:text-[var(--accent-color)] transition-colors">Contact Us</a>
         </div>
@@ -485,7 +512,37 @@
                         </div>
                     </div>
                 </div>
-                
+     <div class="flex-1 flex flex-col p-0 overflow-hidden">
+    <div class="flex items-center justify-between px-4 py-2 bg-zinc-900 border border-zinc-800 border-b-0 rounded-t-xl">
+        <div class="flex gap-2">
+            <button onclick="window.setPreviewDevice('desktop')" id="btn-desktop" class="p-2 rounded bg-blue-600 text-white transition-all" title="Desktop View">
+                <i class="ph-bold ph-desktop text-lg"></i>
+            </button>
+            <button onclick="window.setPreviewDevice('mobile')" id="btn-mobile" class="p-2 rounded bg-zinc-800 text-zinc-400 hover:bg-zinc-700 transition-all" title="Mobile View">
+                <i class="ph-bold ph-device-mobile text-lg"></i>
+            </button>
+        </div>
+        
+        <div class="text-xs text-zinc-500 font-mono bg-zinc-950 px-3 py-1 rounded-full border border-zinc-800">
+            secure://immersive-sandbox.videgen.ai
+        </div>
+
+        <button onclick="window.openPreviewInNewTab()" class="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold rounded-lg border border-zinc-700 transition-all">
+            <i class="ph-bold ph-arrow-square-out"></i> Full Preview
+        </button>
+    </div>
+
+    <div id="preview-wrapper" class="flex-1 bg-zinc-800 border border-zinc-800 rounded-b-xl overflow-hidden relative">
+        <div id="browser-frame" class="w-full h-full bg-white transition-all duration-500 flex flex-col relative device-desktop">
+            <iframe id="preview-frame" class="w-full h-full border-none" sandbox="allow-scripts allow-forms allow-same-origin"></iframe>
+            
+            <div id="empty-state" class="absolute inset-0 flex flex-col items-center justify-center bg-zinc-50 z-10">
+                <i class="ph-duotone ph-layout text-4xl text-zinc-400 mb-2"></i>
+                <h3 class="text-zinc-900 font-bold text-sm">Awaiting Instructions</h3>
+            </div>
+        </div>
+    </div>
+</div>
 
                 <!-- ADVANCED OPTIONS (full-width, below generator/preview) -->
                 
@@ -623,7 +680,7 @@
                                 <!-- Profile Avatar URL -->
                                 <div>
                                     <label for="profile-avatar-url" class="block text-xs font-medium text-zinc-400 mb-1">Profile Image URL</label>
-                                    <input type="url" id="profile-avatar-url" placeholder="https://.../avatar.jpg" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
+                                    <input type="url" id="profile-avatar-url" placeholder="https://static.vecteezy.com/system/resources/thumbnails/038/002/428/small/ai-generated-futuristic-robot-with-glowing-eyes-in-the-dark-photo.jpg.jpg" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-3 text-sm text-white focus:border-blue-500 focus:outline-none transition-colors">
                                     <p class="text-[10px] text-zinc-500 mt-1">Paste a public image URL to use as your profile picture.</p>
                                 </div>
                                 <div class="flex items-center gap-4">
@@ -1490,6 +1547,42 @@ const paletteSelector = document.getElementById('opt-color-palette');
             // CSS looks for this attribute to switch variables
             body.setAttribute('data-theme', selectedTheme);
         });
+
+        // Function to switch between Mobile and Desktop
+window.setPreviewDevice = function(device) {
+    const frame = document.getElementById('browser-frame');
+    const btnD = document.getElementById('btn-desktop');
+    const btnM = document.getElementById('btn-mobile');
+
+    if (device === 'mobile') {
+        frame.className = 'device-mobile bg-white shadow-2xl transition-all duration-500 flex flex-col relative';
+        btnM.classList.replace('bg-zinc-800', 'bg-blue-600');
+        btnM.classList.replace('text-zinc-400', 'text-white');
+        btnD.classList.replace('bg-blue-600', 'bg-zinc-800');
+        btnD.classList.replace('text-white', 'text-zinc-400');
+    } else {
+        frame.className = 'device-desktop w-full h-full bg-white transition-all duration-500 flex flex-col relative';
+        btnD.classList.replace('bg-zinc-800', 'bg-blue-600');
+        btnD.classList.replace('text-white', 'text-white'); // keep white
+        btnM.classList.replace('bg-blue-600', 'bg-zinc-800');
+        btnM.classList.replace('text-white', 'text-zinc-400');
+    }
+};
+
+// Function to open the current generated site in a full new tab
+window.openPreviewInNewTab = function() {
+    const iframe = document.getElementById('preview-frame');
+    const content = iframe.srcdoc;
+
+    if (!content) {
+        alert("No website generated yet!");
+        return;
+    }
+
+    const blob = new Blob([content], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+    window.open(blobUrl, '_blank');
+};
         
     </script>
     <!-- App JS: initialize UI and event handlers -->
@@ -1501,6 +1594,7 @@ const paletteSelector = document.getElementById('opt-color-palette');
     <h2 class="metallic-text text-3xl md:text-3xl font-extrabold tracking-tight drop-[0_4px_8px_rgba(255,255,255,0.2)]">
         GENERATED PORTFOLIO ASSEST.
     </h2>
+    
     
     <div id="image-gallery" class="grid grid-cols-2 md:grid-cols-4 gap-6">
         
